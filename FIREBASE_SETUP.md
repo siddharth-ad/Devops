@@ -12,9 +12,12 @@ This static site uses Cloud Firestore for contact messages and live-editable pag
 ## 2. Create Firestore and publish its rules
 
 1. Open **Build → Firestore Database** and create a database.
-2. Open the **Rules** tab, replace its rules with the contents of `firestore.rules`, then click **Publish**.
-3. The rules allow public visitors to read only `siteContent/portfolio` and submit validated contact messages. They do not allow the website to read messages or write page content. You can still edit page content while signed in to the Firebase Console.
-4. The contact form is public and can receive spam. Add and test Firebase App Check in the site before enabling App Check enforcement; enforcing it without the App Check client will block contact-form writes.
+2. Install the official **Trigger Email from Firestore** extension (`firestore-send-email`) from **Extensions → Explore Extensions**. Select `contactMessages` as its collection path.
+3. Configure the extension with SMTP server details and a verified sender address. Set the SMTP account's recipient to `tadhikary239@gmail.com` only if the extension asks for one; each queued email document already has a fixed `to` value. Keep SMTP credentials in the extension's private configuration, never in this repository or the browser.
+4. Installing Firebase Extensions requires the Firebase project to use the **Blaze (pay-as-you-go) plan**. The extension runs as a Cloud Function and may incur charges according to Firebase and your SMTP provider's pricing.
+5. Open the Firestore **Rules** tab, replace its rules with the contents of `firestore.rules`, then click **Publish**.
+6. The rules allow public visitors to read only `siteContent/portfolio` and submit validated contact messages addressed only to `tadhikary239@gmail.com`. They do not allow the website to read messages or write page content. The email extension uses its service account to process the queue.
+7. The contact form is public and can receive spam. Add and test Firebase App Check in the site before enabling App Check enforcement; enforcing it without the App Check client will block contact-form writes.
 
 ## 3. Add content you want to edit
 
@@ -28,9 +31,9 @@ The array fields `projectOneTags`, `projectTwoTags`, `projectThreeTags`, and `sk
 
 To change text, open `siteContent/portfolio` in the console, add or edit that field, and save. The page updates live; refresh if it is not open.
 
-## 4. Verify contact messages
+## 4. Verify contact messages and email delivery
 
-Submit the website contact form. New submissions appear in **Firestore Database → Data → contactMessages**. Only you, through the Firebase Console, can read them. Do not put private information in `siteContent/portfolio`; visitors can read that document.
+Submit the website contact form. New submissions appear in **Firestore Database → Data → contactMessages**, and the extension sends the notification to `tadhikary239@gmail.com`. Only you, through the Firebase Console, can read messages. Check the document's extension delivery status and the extension's Cloud Function logs if delivery fails. Do not put private information in `siteContent/portfolio`; visitors can read that document.
 
 ## 5. Publish the website changes
 
