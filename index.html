@@ -12,13 +12,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
-
-
-<div class="tools-wall" aria-label="Tools I work with">
-  <div class="tools-row" id="toolsRow1"></div>
-</div>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -44,6 +37,7 @@
   </header>
 
   <main id="main">
+
 
     <!-- ================= HERO ================= -->
     <section class="hero" id="top">
@@ -72,24 +66,6 @@
       </div>
     </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- ================= 3D MASCOT SPOTLIGHT ================= -->
     <section class="spotlight" id="spotlight">
       <div class="stars" aria-hidden="true"></div>
@@ -117,173 +93,10 @@
         <p>From code to cloud, every change is tested, packaged and deployed automatically with CI/CD, containers and Infrastructure as Code.</p>
       </div>
     </section>
-      <script src="script.js"></script>
-  <script src="mascot.js"></script>
-</body>
-</html>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <div class="tools-wall" aria-label="Tools I work with">
+      <div class="tools-row" id="toolsRow1"></div>
+    </div>
 
     <!-- ================= SERVICES ================= -->
     <section class="section" id="services">
@@ -456,30 +269,43 @@
     </div>
   </footer>
 
-  <!-- ================= CHAT ASSISTANT ================= -->
-  <button class="bot-launcher" id="botLauncher" type="button"
-          aria-label="Open chat assistant" aria-expanded="false" aria-controls="botWindow">
-    &#128172;
-  </button>
+ <!-- ================= CHAT ASSISTANT ================= -->
+<button class="bot-launcher" id="botLauncher" type="button"
+        aria-label="Open chat assistant" aria-expanded="false" aria-controls="botWindow">
+  💬
+</button>
 
-  <section class="bot-window" id="botWindow" role="dialog" aria-label="Chat assistant" hidden>
-    <header class="bot-header">
-      <div>
-        <strong>DevOps Assistant</strong>
-        <span class="bot-sub"><i class="bot-dot"></i> Online</span>
-      </div>
-      <button class="bot-close" id="botClose" type="button" aria-label="Close chat">&#10005;</button>
-    </header>
+<section class="bot-window" id="botWindow" role="dialog" aria-label="Chat assistant" hidden>
+  <header class="bot-header">
+    <div>
+      <strong>DevOps Assistant</strong>
+      <span class="bot-sub"><i class="bot-dot"></i> Online</span>
+    </div>
+    <button class="bot-close" id="botClose" type="button" aria-label="Close chat">✕</button>
+  </header>
 
-    <div class="bot-messages" id="botMessages" aria-live="polite"></div>
-    <div class="bot-chips" id="botChips"></div>
+  <div class="bot-messages" id="botMessages" aria-live="polite"></div>
+  <div class="bot-chips" id="botChips"></div>
 
-    <form class="bot-form" id="botForm" autocomplete="off">
-      <input id="botInput" type="text" placeholder="Ask about tools, projects..." aria-label="Type your question" maxlength="200">
-      <button type="submit" aria-label="Send">&#10148;</button>
-    </form>
-  </section>
+  <form class="bot-form" id="botForm" autocomplete="off">
+    <input id="botInput" type="text" placeholder="Ask about tools, projects..." aria-label="Type your question" maxlength="200">
+    <button type="submit" aria-label="Send">➤</button>
+  </form>
+</section>
 
+
+
+
+
+
+
+
+
+
+
+
+  
   <script src="script.js"></script>
+  <script src="mascot.js"></script>
 </body>
 </html>
