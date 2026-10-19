@@ -18,42 +18,106 @@ siteNav.querySelectorAll("a").forEach((link) => {
 // ===== Footer year (updates itself every January) =====
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// ===== Contact form (works with Formspree) =====
+// ===== Contact form (stores submissions in Firebase) =====
 const form = document.getElementById("contactForm");
 const statusText = document.getElementById("formStatus");
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   statusText.className = "form-status";
-
-  // Reminder if the form has not been connected yet
-  if (form.action.includes("YOUR_FORM_ID")) {
-    statusText.textContent = "The form is not connected yet. Add your Formspree form ID in index.html.";
-    statusText.classList.add("error");
-    return;
-  }
-
   statusText.textContent = "Sending...";
 
   try {
-    const response = await fetch(form.action, {
-      method: "POST",
-      body: new FormData(form),
-      headers: { Accept: "application/json" },
+    const { saveContactMessage } = await import("./firebase.js");
+    const values = new FormData(form);
+    await saveContactMessage({
+      name: String(values.get("name") ?? "").trim(),
+      email: String(values.get("email") ?? "").trim(),
+      message: String(values.get("message") ?? "").trim(),
     });
 
-    if (response.ok) {
-      statusText.textContent = "Message sent. I'll reply within one working day.";
-      statusText.classList.add("ok");
-      form.reset();
-    } else {
-      throw new Error("Request failed");
-    }
+    statusText.textContent = "Message sent. I'll reply within one working day.";
+    statusText.classList.add("ok");
+    form.reset();
   } catch (error) {
-    statusText.textContent = "Message not sent. Please email me directly instead.";
+    console.error("Firebase contact form submission failed:", error);
+    statusText.textContent = "Message not sent. Check that Firebase is configured, then try again or email me directly.";
     statusText.classList.add("error");
   }
 });
+
+// ===== Load editable page content from Firestore =====
+function applySiteContent(content) {
+  document.querySelectorAll("[data-site-content]").forEach((element) => {
+    const key = element.dataset.siteContent;
+    const value = content[key];
+    if (typeof value !== "string" || !value.trim()) return;
+
+    if (element instanceof HTMLMetaElement) {
+      element.content = value;
+    } else {
+      element.textContent = value;
+    }
+  });
+
+  document.querySelectorAll("[data-site-href]").forEach((element) => {
+    const key = element.dataset.siteHref;
+    const value = content[key];
+    if (typeof value !== "string" || !value.trim()) return;
+
+    if (key === "contactEmail") {
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        element.href = "mailto:" + value;
+      } else {
+        console.error("Invalid contactEmail in Firestore siteContent/portfolio.");
+      }
+      return;
+    }
+
+    try {
+      const url = new URL(value);
+      if (url.protocol === "https:" || url.protocol === "http:") {
+        element.href = url.href;
+      } else {
+        console.error("Only HTTP(S) URLs are allowed for Firestore content field:", key);
+      }
+    } catch (error) {
+      console.error("Invalid URL in Firestore content field:", key, error);
+    }
+  });
+
+  document.querySelectorAll("[data-site-tags]").forEach((element) => {
+    const key = element.dataset.siteTags;
+    const tags = content[key];
+    if (!Array.isArray(tags) || !tags.every((tag) => typeof tag === "string")) return;
+
+    element.replaceChildren(...tags.slice(0, 12).map((tag) => {
+      const item = document.createElement("li");
+      item.textContent = tag.slice(0, 50);
+      return item;
+    }));
+  });
+}
+
+import("./firebase.js")
+  .then(({ isFirebaseConfigured, watchSiteContent }) => {
+    if (!isFirebaseConfigured()) {
+      console.info("Firebase is not configured yet. The website is using its built-in content.");
+      return;
+    }
+
+    watchSiteContent(
+      (content) => {
+        if (!content) {
+          console.warn("Firestore document siteContent/portfolio does not exist; using built-in content.");
+          return;
+        }
+        applySiteContent(content);
+      },
+      (error) => console.error("Could not load live website content from Firebase:", error),
+    );
+  })
+  .catch((error) => console.error("Could not initialize the Firebase content integration:", error));
 
 
 
