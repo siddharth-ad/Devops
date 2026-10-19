@@ -49,10 +49,17 @@ export async function saveContactMessage({ name, email, message }) {
     throw new Error("Message must be between 1 and 5000 characters.");
   }
 
+  const body = message;
   await addDoc(collection(database, "contactMessages"), {
     name,
     email,
-    message,
+    body,
+    to: ["tadhikary239@gmail.com"],
+    replyTo: email,
+    message: {
+      subject: "New portfolio contact message",
+      text: `From: ${name}\nEmail: ${email}\n\n${body}`,
+    },
     createdAt: serverTimestamp(),
   });
 }
