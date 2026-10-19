@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- EDIT: page title and description (shown in Google results and browser tabs) -->
+  <title>Your Name | Web Developer and Designer</title>
+  <meta name="description" content="Your Name designs and builds clear, fast websites for growing businesses. See recent work and get in touch.">
+
+  <!-- Fonts (Google Fonts). If they fail to load, the fallbacks in style.css are used. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top">Siddharth Adhikary</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+        Menu
+      </button>
+
+      <nav class="site-nav" id="siteNav" aria-label="Main">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a class="nav-cta" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
+        <div>
+          <h1 class="reveal" style="--i:0">Welcome to my "Devops" World, here i post my projects so that my website can help to have a perfect Idea.</h1>
+          <p class="hero-lead reveal" style="--i:1">
+            I design, build and launch Devops Projects here that explain what Actually Devops is and how it works...
+          </p>
+          <div class="hero-actions reveal" style="--i:2">
+            <a class="btn btn-primary" href="#work">See my work</a>
+            <a class="btn btn-ghost" href="#contact">Explore my project</a>
+          </div>
+        </div>
+
+        <!-- EDIT: quick facts. This is the one "memorable" element of the hero. -->
+        <aside class="facts reveal" style="--i:3" aria-label="Quick facts">
+          <p class="status"><span class="dot" aria-hidden="true"></span> Here is my "Devops" projects</p>
+          <dl>
+            <div><dt>Based in</dt><dd>AWS, GCP, AZURE</dd></div>
+            <div><dt>Type of project</dt><dd>Terraform , kubernative , jenkings , </dd></div>
+            <div><dt>I reply within</dt><dd>1 working day</dd></div>
+            <div><dt>Works with</dt><dd>Jenkings, Docker, Kubernetes, Ansible,</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section class="section" id="services">
+      <div class="wrap">
+        <h2 class="section-title">What I can do for you</h2>
+
+        <div class="service-list">
+          <article class="service">
+            <h3>Make Devops Projects</h3>
+            <p>I Have desing this Website for the Devops Projects and i have showcase them here.</p>
+            <p class="service-meta">Infrastructure as Code, CI/CD, Containerization,</p>
+          </article>
+
+          <article class="service">
+            <h3>Devops Implementation</h3>
+            <p>Hand-coded pages that load fast, rank well in search and are easy for you to update.</p>
+            <p class="service-meta">HTML, CSS, JavaScript, contact forms, SEO basics</p>
+          </article>
+
+          <article class="service">
+            <h3>Launch and support</h3>
+            <p>I set up hosting, your domain and analytics, then stay on hand for fixes and changes.</p>
+            <p class="service-meta">GitHub Pages, custom domains,</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WORK ================= -->
+    <section class="section section-alt" id="work">
+      <div class="wrap">
+        <h2 class="section-title">Selected work</h2>
+
+        <!-- EDIT: replace each project. To use a real screenshot, swap the
+             <div class="mock">...</div> for: <img src="images/Cat.jpg.jpg" alt="Describe the screenshot"> -->
+
+        <article class="project">
+          <div class="project-media">
+            <div class="mock" style="--tone:#2B4EFF">
+  <div class="mock-bar"><i></i><i></i><i></i></div>
+  <div class="mock-body">
+    <div class="mock-hero has-image">
+      <div class="auto-slider">
+        <div class="auto-track">
+          <img src="sid.png"  alt="CI/CD infinity loop diagram">
+          <img src="sid 2.png" alt="Second project image">
+          <img src="sid.png"  alt="" aria-hidden="true">
+        </div>
+      </div>
+    </div>
+    <div class="mock-cols"><span></span><span></span><span></span></div>
+  </div>
+            </div>
+          </div>
+          <div class="project-text">
+            <h3>CI/CD Pipeline</h3>
+            <p>A new website for a neighbourhood cafe with an online menu and a table booking form. Bookings went up within the first month.</p>
+            <ul class="tags"><li>Ansible</li><li>Terraform</li><li>CI/CD</li></ul>
+            <a class="text-link" href="#" target="_blank" rel="noopener">Visit the live site</a>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="project-media">
+            <div class="mock" style="--tone:#1F9D6B" role="img" aria-label="Preview of the GreenLeaf Consulting website">
+              <div class="mock-bar"><i></i><i></i><i></i></div>
+              <div class="mock-body">
+                <div class="mock-hero"></div>
+                <div class="mock-cols"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="project-text">
+            <h3>Exploring Projects </h3>
+            <p>A clean company site that explains three services in plain language, with case studies and a clear enquiry path.</p>
+            <ul class="tags"><li>Design</li><li>JavaScript</li><li>SEO</li></ul>
+            <a class="text-link" href="#" target="_blank" rel="noopener">Visit the live site</a>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="project-media">
+            <div class="mock" style="--tone:#D9822B" role="img" aria-label="Preview of the Studio Nine portfolio">
+              <div class="mock-bar"><i></i><i></i><i></i></div>
+              <div class="mock-body">
+                <div class="mock-hero"></div>
+                <div class="mock-cols"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="project-text">
+            <h3>Studio Nine Portfolio</h3>
+            <p>A fast image-led portfolio for a photographer, built so galleries open instantly even on slow mobile connections.</p>
+            <ul class="tags"><li>Development</li><li>Performance</li><li>Gallery</li></ul>
+            <a class="text-link" href="#" target="_blank" rel="noopener">Visit the live site</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section class="section" id="about">
+      <div class="wrap about-grid">
+        <!-- EDIT: replace the initials block with your photo:
+             <img class="portrait" src="images/me.jpg" alt="Photo of Your Name"> -->
+        <div class="portrait" role="img" aria-label="Portrait placeholder">YN</div>
+
+        <div>
+          <h2 class="section-title">About me</h2>
+          <p class="about-text">
+            I'm a web developer and designer with 5 years of experience helping small businesses
+            get online. I care about sites that are easy to understand, quick to load and simple
+            to maintain.
+          </p>
+          <p class="about-text">
+            Before web design I worked in customer support, so I write and build with the
+            visitor's questions in mind. When I'm not working I'm usually hiking or trying to
+            fix my own bicycle.
+          </p>
+
+          <h3 class="skills-title">Tools I use every day</h3>
+          <ul class="tags tags-lg">
+            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Git and GitHub</li>
+            <li>Figma</li><li>WordPress</li><li>SEO</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="section section-alt" id="contact">
+      <div class="wrap contact-grid">
+        <div>
+          <h2 class="section-title">Let's talk about your project</h2>
+          <p class="about-text">
+            Tell me what you need and when you'd like to launch. I'll reply within one working
+            day with questions or a first estimate.
+          </p>
+          <ul class="contact-list">
+            <!-- EDIT: your real details -->
+            <li>Email: <a href="mailto:tadhikary239@gmail.com">tadhikary239@gmail.com</a></li>
+            <li>LinkedIn: <a href="https://www.linkedin.com/" target="_blank" rel="noopener">linkedin.com/in/tapas-adhikary</a></li>
+            <li>GitHub: <a href="https://github.com/" target="_blank" rel="noopener">github.com/siddharth-ad</a></li>
+          </ul>
+        </div>
+
+        <!-- EDIT: replace YOUR_FORM_ID with your Formspree form ID (see the step-by-step guide) -->
+        <form class="form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required>
+
+          <label for="email">Your email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+
+          <label for="message">About your project</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+
+          <button class="btn btn-primary" type="submit">Send message</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>&copy; <span id="year">2026</span> Your Name. All rights reserved.</p>
+      <a href="#top">Back to top</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
