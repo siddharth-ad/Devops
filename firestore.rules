@@ -11,12 +11,18 @@ service cloud.firestore {
       allow create: if request.resource.data.keys().hasAll([
           'name',
           'email',
+          'body',
+          'to',
+          'replyTo',
           'message',
           'createdAt'
         ])
         && request.resource.data.keys().hasOnly([
           'name',
           'email',
+          'body',
+          'to',
+          'replyTo',
           'message',
           'createdAt'
         ])
@@ -26,9 +32,22 @@ service cloud.firestore {
         && request.resource.data.email is string
         && request.resource.data.email.size() > 0
         && request.resource.data.email.size() <= 254
-        && request.resource.data.message is string
-        && request.resource.data.message.size() > 0
-        && request.resource.data.message.size() <= 5000
+        && request.resource.data.body is string
+        && request.resource.data.body.size() > 0
+        && request.resource.data.body.size() <= 5000
+        && request.resource.data.to == ['tadhikary239@gmail.com']
+        && request.resource.data.replyTo == request.resource.data.email
+        && request.resource.data.message is map
+        && request.resource.data.message.keys().hasOnly(['subject', 'text'])
+        && request.resource.data.message.keys().hasAll(['subject', 'text'])
+        && request.resource.data.message.subject == 'New portfolio contact message'
+        && request.resource.data.message.text is string
+        && request.resource.data.message.text.size() > 0
+        && request.resource.data.message.text.size() <= 5500
+        && request.resource.data.message.text
+          == 'From: ' + request.resource.data.name
+            + '\nEmail: ' + request.resource.data.email
+            + '\n\n' + request.resource.data.body
         && request.resource.data.createdAt is timestamp
         && request.resource.data.createdAt == request.time;
       allow get, list, update, delete: if false;
