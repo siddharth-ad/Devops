@@ -54,7 +54,7 @@ export async function saveContactMessage({ name, email, message }) {
     name,
     email,
     body,
-    to: ["tadhikary239@gmail.com"],
+    to: ["aaak1837@gmail.com"],
     replyTo: email,
     message: {
       subject: "New portfolio contact message",

@@ -21,11 +21,44 @@ document.getElementById("year").textContent = new Date().getFullYear();
 // ===== Contact form (stores submissions in Firebase) =====
 const form = document.getElementById("contactForm");
 const statusText = document.getElementById("formStatus");
+const submitButton = form.querySelector('button[type="submit"]');
+
+function getContactErrorMessage(error) {
+  if (error?.message?.includes("Set your Firebase web app configuration")) {
+    return "Firebase is not configured in this deployed version. Add your web app config, publish it, then try again.";
+  }
+
+  switch (error?.code) {
+    case "permission-denied":
+    case "firestore/permission-denied":
+      return "Firestore rejected this message. Check that the latest rules from firestore.rules are published.";
+    case "unavailable":
+    case "firestore/unavailable":
+    case "deadline-exceeded":
+    case "firestore/deadline-exceeded":
+      return "Could not reach Firebase. Check your internet connection and try again.";
+    case "failed-precondition":
+    case "firestore/failed-precondition":
+      return "Firestore setup is incomplete. Check that the database exists and its rules are published.";
+    case "invalid-argument":
+    case "firestore/invalid-argument":
+      return "Firebase rejected the message format. Check the Firestore rules and Trigger Email extension setup.";
+    case "resource-exhausted":
+    case "firestore/resource-exhausted":
+      return "Firebase has reached a usage limit. Check the project quota and billing status.";
+    default:
+      if (error instanceof TypeError) {
+        return "Could not load or reach Firebase. Use localhost or HTTPS and check your network connection.";
+      }
+      return "Message not saved. Check the browser console for the Firebase error, then try again.";
+  }
+}
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   statusText.className = "form-status";
   statusText.textContent = "Sending...";
+  submitButton.disabled = true;
 
   try {
     const { saveContactMessage } = await import("./firebase.js");
@@ -36,13 +69,15 @@ form.addEventListener("submit", async (event) => {
       message: String(values.get("message") ?? "").trim(),
     });
 
-    statusText.textContent = "Message sent. I'll reply within one working day.";
+    statusText.textContent = "Your message was submitted. An email notification is queued.";
     statusText.classList.add("ok");
     form.reset();
   } catch (error) {
     console.error("Firebase contact form submission failed:", error);
-    statusText.textContent = "Message not sent. Check that Firebase is configured, then try again or email me directly.";
+    statusText.textContent = getContactErrorMessage(error);
     statusText.classList.add("error");
+  } finally {
+    submitButton.disabled = false;
   }
 });
 

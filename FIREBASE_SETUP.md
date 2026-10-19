@@ -35,6 +35,13 @@ To change text, open `siteContent/portfolio` in the console, add or edit that fi
 
 Submit the website contact form. New submissions appear in **Firestore Database → Data → contactMessages**, and the extension sends the notification to `tadhikary239@gmail.com`. Only you, through the Firebase Console, can read messages. Check the document's extension delivery status and the extension's Cloud Function logs if delivery fails. Do not put private information in `siteContent/portfolio`; visitors can read that document.
 
+If a submission fails, open the page's developer tools (**F12 → Console**) and read the Firebase error:
+
+- `permission-denied`: publish the supplied Firestore rules and confirm they are attached to the `(default)` database.
+- `unavailable` or a network error: check connectivity, and open the site from `http://localhost` or its HTTPS GitHub Pages URL, not `file://`.
+- `failed-precondition`: confirm the Firestore database exists and is enabled.
+- A document appears but no email arrives: check the Trigger Email extension's collection path (`contactMessages`), SMTP credentials, sender verification, and Cloud Function logs. The page reports when an email job is queued; only the extension's delivery status confirms actual email delivery.
+
 ## 5. Publish the website changes
 
 From the project folder, commit and push the integration:
