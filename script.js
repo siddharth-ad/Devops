@@ -180,3 +180,258 @@ function fillRow(rowId, list) {
 
 // Put all the tools in one row
 fillRow("toolsRow1", TOOLS);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== Chat assistant =====
+(function () {
+  const launcher = document.getElementById("botLauncher");
+  const win = document.getElementById("botWindow");
+  const closeBtn = document.getElementById("botClose");
+  const log = document.getElementById("botMessages");
+  const chipsBox = document.getElementById("botChips");
+  const form = document.getElementById("botForm");
+  const input = document.getElementById("botInput");
+  if (!launcher || !win) return;
+
+  // ---------- 1. What the bot knows (EDIT THESE ANSWERS) ----------
+  const TOOL_INFO = {
+    "ansible": "Ansible automates server setup and app deployment using simple YAML playbooks, with no agent needed.",
+    "bamboo": "Bamboo is Atlassian's CI/CD server. It builds, tests and deploys code and connects well with Jira.",
+    "chef": "Chef manages server configuration as code using 'recipes' and 'cookbooks'.",
+    "docker": "Docker packages an app and everything it needs into a container, so it runs the same everywhere.",
+    "elk": "The ELK Stack (Elasticsearch, Logstash, Kibana) collects, searches and visualises logs.",
+    "elk stack": "The ELK Stack (Elasticsearch, Logstash, Kibana) collects, searches and visualises logs.",
+    "fluentd": "Fluentd collects logs from many sources and sends them to one place such as Elasticsearch.",
+    "gitlab": "GitLab hosts Git repositories and has built-in CI/CD pipelines.",
+    "github actions": "GitHub Actions runs automated workflows (tests, builds, deploys) whenever you push code.",
+    "github": "GitHub hosts code with Git, supports teamwork through pull requests, and runs GitHub Actions.",
+    "vault": "HashiCorp Vault stores and protects secrets like passwords, tokens and API keys.",
+    "hashicorp vault": "HashiCorp Vault stores and protects secrets like passwords, tokens and API keys.",
+    "icinga": "Icinga monitors servers and services and sends alerts when something fails.",
+    "jenkins": "Jenkins is an open-source automation server for building, testing and deploying software with pipelines.",
+    "kubernetes": "Kubernetes runs and scales containers across many machines and restarts them if they fail.",
+    "k8s": "Kubernetes runs and scales containers across many machines and restarts them if they fail.",
+    "loki": "Grafana Loki is a lightweight log system that works well with Grafana dashboards.",
+    "maven": "Maven builds Java projects and manages their dependencies using a pom.xml file.",
+    "nagios": "Nagios is a classic monitoring tool that checks hosts and services and raises alerts.",
+    "octopus deploy": "Octopus Deploy automates releases and deployments across environments.",
+    "octopus": "Octopus Deploy automates releases and deployments across environments.",
+    "prometheus": "Prometheus collects metrics from your systems and triggers alerts. It is usually paired with Grafana.",
+    "grafana": "Grafana turns metrics and logs into live dashboards and alerts.",
+    "quay": "Quay is a container image registry that stores and scans Docker images.",
+    "rabbitmq": "RabbitMQ is a message broker. It lets services talk to each other through queues.",
+    "selenium": "Selenium automates web browsers for testing websites.",
+    "terraform": "Terraform creates cloud infrastructure (AWS, GCP, Azure) from code. This is called Infrastructure as Code.",
+    "uptime robot": "Uptime Robot checks if your website is online and alerts you when it goes down.",
+    "vagrant": "Vagrant builds and manages reproducible virtual machine environments for development.",
+    "wiz": "Wiz is a cloud security platform that finds risks and misconfigurations in cloud accounts.",
+    "xray": "JFrog Xray scans software packages and container images for vulnerabilities.",
+    "ydb": "YDB is a distributed SQL database from Yandex.",
+    "zipkin": "Zipkin is a distributed tracing tool. It shows how a request travels through microservices.",
+  };
+
+  // keys = words that trigger the answer. go = optional button [section, label]
+  const INTENTS = [
+    { keys: ["hi", "hello", "hey", "hii", "good morning", "good evening"],
+      answer: "Hi! I'm the DevOps assistant on Siddharth's portfolio. Ask me about his projects, tools or how to get in touch." },
+    { keys: ["who are you", "about", "siddharth", "yourself", "owner", "who is"],
+      answer: "This is the portfolio of Siddharth Adhikary. He builds and showcases DevOps projects covering CI/CD, Infrastructure as Code and containers.",
+      go: ["#about", "Go to About"] },
+    { keys: ["project", "projects", "work", "portfolio", "built"],
+      answer: "Projects on this site:\n• CI/CD Pipeline (Git, GitHub Actions, automated deployment)\n• Exploring Projects (web, DevOps and automation)\n• Main agenda of a DevOps Engineer",
+      go: ["#work", "See the projects"] },
+    { keys: ["tools", "tool", "technology", "technologies", "stack", "skills", "skill", "know"],
+      answer: "The tools strip covers 27 tools, including Ansible, Docker, Jenkins, Kubernetes, Terraform, Prometheus, GitLab and GitHub Actions. Type any tool name and I'll explain it.",
+      go: ["#work", "See the tools"] },
+    { keys: ["devops", "what is devops", "meaning"],
+      answer: "DevOps combines Development and Operations. The goal is to release software faster and more safely using automation, CI/CD, monitoring and Infrastructure as Code." },
+    { keys: ["ci cd", "cicd", "pipeline", "continuous integration", "continuous delivery", "continuous deployment"],
+      answer: "CI/CD automates the path from code to production.\n• CI (Continuous Integration): every code change is built and tested automatically.\n• CD (Continuous Delivery/Deployment): tested code is released automatically.\nThe first project on this site shows it in action.",
+      go: ["#work", "See the CI/CD project"] },
+    { keys: ["infrastructure as code", "iac"],
+      answer: "Infrastructure as Code means creating servers, networks and databases from code files (for example with Terraform or Ansible) instead of clicking in a console." },
+    { keys: ["cloud", "aws", "gcp", "azure"],
+      answer: "The portfolio mentions AWS, GCP and Azure as the cloud platforms Siddharth works with." },
+    { keys: ["monitoring", "monitor", "logging", "logs", "observability"],
+      answer: "For monitoring and logs, popular tools are Prometheus, Grafana, Loki, the ELK Stack, Fluentd, Nagios and Icinga. Ask me about any of them." },
+    { keys: ["contact", "email", "mail", "reach", "hire", "linkedin", "connect", "talk"],
+      answer: "You can reach Siddharth at tadhikary239@gmail.com, on LinkedIn, or on GitHub (siddharth-ad). He replies within 1 working day.",
+      go: ["#contact", "Go to Contact"] },
+    { keys: ["services", "service", "offer", "help with", "do for"],
+      answer: "Services: building DevOps projects, DevOps implementation, and launch and support (hosting, domains, GitHub Pages).",
+      go: ["#services", "See services"] },
+    { keys: ["reply", "response time", "how long"],
+      answer: "Messages are answered within 1 working day." },
+    { keys: ["thanks", "thank you", "thx", "great", "awesome"],
+      answer: "You're welcome! Anything else you'd like to know?" },
+    { keys: ["bye", "goodbye", "see you"],
+      answer: "Goodbye! Thanks for visiting." },
+  ];
+
+  const START_CHIPS = ["Show projects", "What tools do you know?", "What is CI/CD?", "How can I contact you?"];
+  const FALLBACK = "I'm not sure about that one yet. Try asking about projects, tools (for example 'What is Docker?'), CI/CD, or how to contact Siddharth.";
+
+  // ---------- 2. Understanding the question ----------
+  const clean = (t) => " " + t.toLowerCase().replace(/[^a-z0-9+#]+/g, " ").trim() + " ";
+  const hasWord = (text, key) => text.includes(" " + key + " ");
+
+  function findAnswer(question) {
+    const text = clean(question);
+
+    // a) A specific tool? (longest names first, so "github actions" beats "github")
+    const toolKeys = Object.keys(TOOL_INFO).sort((a, b) => b.length - a.length);
+    for (const key of toolKeys) {
+      if (hasWord(text, key)) return { answer: TOOL_INFO[key] };
+    }
+
+    // b) Otherwise pick the topic with the most matching keywords
+    let best = null;
+    let bestScore = 0;
+    for (const intent of INTENTS) {
+      let score = 0;
+      for (const key of intent.keys) {
+        if (hasWord(text, key)) score += key.split(" ").length; // longer phrases count more
+      }
+      if (score > bestScore) { best = intent; bestScore = score; }
+    }
+    return best || { answer: FALLBACK };
+  }
+
+  // ---------- 3. Showing messages ----------
+  function scrollDown() { log.scrollTop = log.scrollHeight; }
+
+  function addMessage(text, who, go) {
+    const msg = document.createElement("div");
+    msg.className = "bot-msg " + who;
+    msg.textContent = text;            // textContent keeps user text safe
+
+    if (go) {
+      msg.appendChild(document.createElement("br"));
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bot-go";
+      btn.textContent = go[1];
+      btn.addEventListener("click", () => {
+        const target = document.querySelector(go[0]);
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+        if (window.innerWidth < 600) closeChat();
+      });
+      msg.appendChild(btn);
+    }
+    log.appendChild(msg);
+    scrollDown();
+    return msg;
+  }
+
+  function reply(question) {
+    const result = findAnswer(question);
+
+    // typing animation
+    const typing = document.createElement("div");
+    typing.className = "bot-msg bot bot-typing";
+    typing.innerHTML = "<i></i><i></i><i></i>";
+    log.appendChild(typing);
+    scrollDown();
+
+    setTimeout(() => {
+      typing.remove();
+      addMessage(result.answer, "bot", result.go);
+    }, 600 + Math.random() * 400);
+  }
+
+  function ask(question) {
+    const q = question.trim();
+    if (!q) return;
+    addMessage(q, "user");
+    reply(q);
+  }
+
+  // ---------- 4. Buttons and events ----------
+  START_CHIPS.forEach((label) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.textContent = label;
+    chip.addEventListener("click", () => ask(label));
+    chipsBox.appendChild(chip);
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    ask(input.value);
+    input.value = "";
+  });
+
+  let greeted = false;
+  function openChat() {
+    win.hidden = false;
+    launcher.setAttribute("aria-expanded", "true");
+    if (!greeted) {
+      greeted = true;
+      addMessage("Hi! 👋 I'm the DevOps assistant. Ask me about projects, tools or how to get in touch.", "bot");
+    }
+    input.focus();
+  }
+  function closeChat() {
+    win.hidden = true;
+    launcher.setAttribute("aria-expanded", "false");
+    launcher.focus();
+  }
+
+  launcher.addEventListener("click", () => (win.hidden ? openChat() : closeChat()));
+  closeBtn.addEventListener("click", closeChat);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !win.hidden) closeChat();
+  });
+})();
