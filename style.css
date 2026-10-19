@@ -505,3 +505,113 @@ ul { margin: 0; padding: 0; list-style: none; }
 .project-stacked .project-text p {
   max-width: 60ch;                /* longer lines look better under a wide box */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Advanced tools wall (two rows, opposite directions) ===== */
+.tools-wall {
+  margin-top: 40px;
+  display: grid;
+  gap: 18px;
+}
+
+.tools-row {
+  overflow: hidden;
+  padding: 8px 0;                      /* room so the hover zoom is not cut off */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.tools-track {
+  display: flex;
+  width: max-content;
+  animation: tools-scroll 80s linear infinite;
+}
+.tools-row.reverse .tools-track { animation-direction: reverse; }
+
+.tools-group {
+  display: flex;
+  gap: 16px;
+  padding-right: 16px;                 /* same as gap, so the loop has no jump */
+}
+
+/* One tool card */
+.tool-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px 12px 14px;
+  border-radius: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.tool-card:hover {
+  transform: translateY(-6px) scale(1.06);
+  border-color: var(--c);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--c) 35%, transparent);
+}
+
+.tool-card img,
+.tool-badge {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Letter badge shown if a logo cannot be loaded */
+.tool-badge {
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--c);
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+@keyframes tools-scroll {
+  to { transform: translateX(-50%); }
+}
+
+/* Pause the row you point at */
+.tools-row:hover .tools-track { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tools-track { animation: none; }
+  .tools-row { overflow-x: auto; }
+}
