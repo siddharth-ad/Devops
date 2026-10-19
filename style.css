@@ -615,3 +615,230 @@ ul { margin: 0; padding: 0; list-style: none; }
   .tools-track { animation: none; }
   .tools-row { overflow-x: auto; }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Chat assistant ===== */
+.bot-launcher {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 90;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 1.6rem;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+.bot-launcher:hover { transform: scale(1.08); }
+
+.bot-window {
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  z-index: 90;
+  width: min(380px, calc(100vw - 40px));
+  height: min(560px, calc(100vh - 120px));
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  animation: bot-pop 0.25s ease both;
+}
+.bot-window[hidden] { display: none; }
+
+@keyframes bot-pop {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.bot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.bot-sub { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; opacity: 0.9; }
+.bot-dot { width: 8px; height: 8px; border-radius: 50%; background: #3DDC97; display: inline-block; }
+.bot-close {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.bot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--paper);
+}
+
+.bot-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  animation: bot-pop 0.2s ease both;
+}
+.bot-msg.bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.bot-msg.user { align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-bottom-right-radius: 4px; }
+
+.bot-go {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.bot-go:hover { background: var(--accent); color: var(--accent-ink); }
+
+/* Typing dots */
+.bot-typing { display: flex; gap: 5px; padding: 14px; }
+.bot-typing i {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted);
+  animation: bot-blink 1s infinite;
+}
+.bot-typing i:nth-child(2) { animation-delay: 0.2s; }
+.bot-typing i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bot-blink { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
+
+.bot-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+}
+.bot-chips button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--accent-soft);
+  color: var(--ink);
+  cursor: pointer;
+}
+.bot-chips button:hover { border-color: var(--accent); }
+
+.bot-form { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); }
+.bot-form input {
+  flex: 1;
+  font: inherit;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.bot-form button {
+  width: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .bot-window { right: 10px; bottom: 80px; width: calc(100vw - 20px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bot-window, .bot-msg, .bot-typing i { animation: none; }
+}
