@@ -1133,16 +1133,6 @@ ul { margin: 0; padding: 0; list-style: none; }
   border-radius: 50%;
   background: #FF7A1A;
 }
-.d-smile {
-  position: absolute;
-  left: 17px;
-  top: 29px;
-  width: 12px;
-  height: 6px;
-  border-bottom: 2px solid #8A3B00;
-  border-radius: 0 0 10px 10px;
-}
-
 /* ----- Kitten ----- */
 .cat {
   left: 64%;
