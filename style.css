@@ -411,6 +411,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   .contact-grid,
   .project { grid-template-columns: 1fr; }
 
+  .hero-side { order: -1; }
+
   .project:nth-of-type(even) .project-media { order: 0; }
 
   .service { grid-template-columns: 1fr; gap: 10px; }
@@ -1492,7 +1494,7 @@ a:hover { color: #A3F2E8; }
     border-bottom-color: var(--line);
   }
   .site-nav a { padding: 10px 0; }
-  .hero { padding-top: 72px; }
+  .hero { padding-top: clamp(24px, 6vw, 48px); }
   .hero h1 { max-width: 12ch; }
   .hero-actions { margin-top: 28px; }
   .project { padding: 16px; border-radius: 16px; }
