@@ -1700,6 +1700,23 @@ a:hover { color: #A3F2E8; }
   color: var(--accent);
 }
 
+@media (max-width: 600px) {
+  .hero-side { width: 100%; }
+
+  .infinity {
+    width: min(100%, 440px);
+    margin-inline: auto;
+  }
+
+  .inf-chip {
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+  }
+
+  .inf-chip img { width: 14px; height: 14px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .inf-flow { animation: none; }
   .infinity-stage { transition: none; }
