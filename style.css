@@ -1877,24 +1877,36 @@ a:hover { color: #A3F2E8; }
   .btn:hover { transform: none; }
 }
 
+body {
+  position: relative;
+  isolation: isolate;
+}
 
+body::before {
+  position: fixed;
+  z-index: -1;
+  inset: -28%;
+  background:
+    radial-gradient(ellipse at 22% 30%, rgba(32, 172, 174, 0.13), transparent 32%),
+    radial-gradient(ellipse at 73% 25%, rgba(108, 77, 190, 0.13), transparent 34%),
+    radial-gradient(ellipse at 54% 75%, rgba(35, 93, 145, 0.1), transparent 38%);
+  content: "";
+  opacity: 0.8;
+  pointer-events: none;
+  transform: translate3d(-2%, -1%, 0) scale(1.02);
+  animation: ambient-background-drift 34s ease-in-out infinite alternate;
+}
 
+@keyframes ambient-background-drift {
+  to { transform: translate3d(2%, 2%, 0) scale(1.08); }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+    transform: none;
+  }
+}
 
 
 
