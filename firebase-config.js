@@ -8,4 +8,4 @@ export const firebaseConfig = {
   measurementId: "G-JNWV28YMT7"
 };
 
-
+export const galleryOwnerUid = "vjkKrSwKYqW4BZREej4J4gM57793";

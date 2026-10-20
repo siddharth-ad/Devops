@@ -19,7 +19,22 @@ This static site uses Cloud Firestore for contact messages and live-editable pag
 6. The rules allow public visitors to read only `siteContent/portfolio` and submit validated contact messages addressed only to `tadhikary239@gmail.com`. They do not allow the website to read messages or write page content. The email extension uses its service account to process the queue.
 7. The contact form is public and can receive spam. Add and test Firebase App Check in the site before enabling App Check enforcement; enforcing it without the App Check client will block contact-form writes.
 
-## 3. Add content you want to edit
+## 3. Set up the public media gallery and owner uploads
+
+The gallery is publicly readable, but only the one configured Firebase Auth user can upload or delete media. It accepts multiple files from a phone or computer, asks for a title and description for every file, uploads one file at a time with progress, and has no application-level item-count limit. Firebase quotas, storage, download bandwidth, and billing still apply; monitor usage and configure budget alerts in Google Cloud.
+
+1. In **Build → Authentication → Sign-in method**, enable **Email/Password**.
+2. In **Authentication → Users**, add an account for yourself. The website only offers sign-in; it does not offer public account creation.
+3. Copy that account's **UID** and set it as `galleryOwnerUid` in `firebase-config.js`.
+4. In **Build → Storage**, create a bucket if one does not already exist. Confirm `storageBucket` in `firebase-config.js` is the bucket's exact name.
+5. Put the same UID in both `firestore.rules` and `storage.rules`. Publish `firestore.rules` in the Firestore Rules tab and `storage.rules` in the Storage Rules tab.
+6. The rules allow public reads of gallery metadata and media. Only that UID can create gallery metadata or upload/delete files under its own `gallery/{uid}/` path. Storage rules enforce these maximum per-file sizes: photos 25 MB, videos 500 MB, and audio 100 MB. The page also checks the limits before upload.
+7. Open `gallery.html` over HTTPS, open **Owner sign in**, and sign in with the account you created. Select multiple photos, videos, or music files. Give each a title and description, then choose **Upload selected media**. Visitors can view images, play videos, and play audio without signing in.
+8. Uploads are public. Only upload media and music you own or have permission to publish. Firebase Storage and bandwidth are not unlimited; set Cloud Billing budget alerts and monitor actual usage. Alerts are notifications, not a guaranteed spending cap.
+
+If owner upload is not configured yet, the gallery remains viewable but sign-in and upload will not work. A `permission-denied` error usually means the UID in the config does not exactly match the Firebase Auth user or both published rules.
+
+## 4. Add content you want to edit
 
 In **Firestore Database → Data**, create collection `siteContent`, with document ID `portfolio`. Add only the fields you want to override; any omitted field keeps the text already in `index.html`. Firestore listens for changes and updates the open page automatically.
 
@@ -31,7 +46,7 @@ The array fields `projectOneTags`, `projectTwoTags`, `projectThreeTags`, and `sk
 
 To change text, open `siteContent/portfolio` in the console, add or edit that field, and save. The page updates live; refresh if it is not open.
 
-## 4. Verify contact messages and email delivery
+## 5. Verify contact messages and email delivery
 
 Submit the website contact form. New submissions appear in **Firestore Database → Data → contactMessages**, and the extension sends the notification to `tadhikary239@gmail.com`. Only you, through the Firebase Console, can read messages. Check the document's extension delivery status and the extension's Cloud Function logs if delivery fails. Do not put private information in `siteContent/portfolio`; visitors can read that document.
 
@@ -42,12 +57,12 @@ If a submission fails, open the page's developer tools (**F12 → Console**) and
 - `failed-precondition`: confirm the Firestore database exists and is enabled.
 - A document appears but no email arrives: check the Trigger Email extension's collection path (`contactMessages`), SMTP credentials, sender verification, and Cloud Function logs. The page reports when an email job is queued; only the extension's delivery status confirms actual email delivery.
 
-## 5. Publish the website changes
+## 6. Publish the website changes
 
 From the project folder, commit and push the integration:
 
 ```powershell
-git add -- index.html script.js firebase.js firebase-config.js firestore.rules FIREBASE_SETUP.md
+git add -- index.html script.js firebase.js firebase-config.js firestore.rules storage.rules gallery.js gallery.html style.css FIREBASE_SETUP.md
 git commit -m "Connect portfolio to Firebase"
 git push
 ```

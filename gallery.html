@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gallery | Siddharth Adhikary</title>
+  <meta name="description" content="A personal photo gallery by Siddharth Adhikary.">
+  <link rel="canonical" href="https://siddharth-ad.github.io/Devops/gallery.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://siddharth-ad.github.io/Devops/gallery.html">
+  <meta property="og:title" content="Gallery | Siddharth Adhikary">
+  <meta property="og:description" content="A curated gallery of personal photos and everyday moments.">
+  <meta property="og:image" content="https://siddharth-ad.github.io/Devops/sid.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="projects-page gallery-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header projects-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html#top">Siddharth Adhikary</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav">
+        Menu
+      </button>
+      <nav class="site-nav" id="siteNav" aria-label="Main">
+        <a href="index.html#top">Home</a>
+        <a href="projects.html">Services</a>
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="social.html" aria-current="page">Social Media</a>
+        <a class="nav-cta" href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="projects-intro gallery-intro">
+      <div class="wrap">
+        <p class="projects-eyebrow">A PERSONAL PHOTO JOURNAL</p>
+        <h1>Moments, collected.</h1>
+        <p>A thoughtfully arranged space for favorite photos, travels, and everyday life.</p>
+      </div>
+    </section>
+
+    <nav class="social-tabs wrap" aria-label="Social media sections">
+      <a href="social.html">Profiles</a>
+      <a href="gallery.html" aria-current="page">Gallery</a>
+    </nav>
+
+    <section class="section gallery-section" aria-labelledby="gallery-heading">
+      <div class="wrap">
+        <div class="gallery-heading">
+          <div>
+            <p class="projects-eyebrow">SELECTED MOMENTS</p>
+            <h2 id="gallery-heading">Photo gallery</h2>
+          </div>
+          <span class="gallery-count" id="galleryCount">LOADING COLLECTION</span>
+        </div>
+
+        <nav class="gallery-tabs" aria-label="Gallery media type">
+          <button type="button" data-gallery-filter="visual" aria-pressed="true">Photos &amp; videos</button>
+          <button type="button" data-gallery-filter="audio" aria-pressed="false">Music</button>
+        </nav>
+
+        <p class="gallery-status" id="galleryStatus" role="status" aria-live="polite">Loading the public gallery…</p>
+        <div class="gallery-grid" id="galleryGrid" aria-label="Photo and video gallery"></div>
+        <div class="gallery-grid gallery-audio-list" id="galleryAudio" aria-label="Music gallery" hidden></div>
+
+        <details class="gallery-owner-panel">
+          <summary>Owner sign in</summary>
+          <div class="gallery-owner-body">
+            <p>Sign in with the authorized gallery account to upload or remove your media. Visitors can browse the gallery without signing in.</p>
+            <form id="galleryLoginForm" class="gallery-login-form">
+              <label for="galleryEmail">Email</label>
+              <input id="galleryEmail" name="email" type="email" autocomplete="username" required>
+              <label for="galleryPassword">Password</label>
+              <input id="galleryPassword" name="password" type="password" autocomplete="current-password" required>
+              <button class="btn btn-primary" type="submit">Sign in</button>
+            </form>
+            <button class="btn btn-ghost gallery-signout" id="gallerySignOut" type="button" hidden>Sign out</button>
+            <form id="galleryUploadForm" class="gallery-upload-form" hidden>
+              <label for="galleryFiles">Choose photos, videos, or music</label>
+              <input id="galleryFiles" name="files" type="file" accept="image/*,video/*,audio/*" multiple>
+              <p class="gallery-upload-help">Per file: photos up to 25 MB, videos up to 500 MB, music up to 100 MB. No fixed item-count limit; Firebase storage, bandwidth, and billing limits still apply.</p>
+              <div id="galleryQueue" class="gallery-queue"></div>
+              <button class="btn btn-primary" type="submit" id="galleryUploadButton" disabled>Upload selected media</button>
+            </form>
+          </div>
+        </details>
+
+        <p class="gallery-note">Add a title and description to each item before uploading. Photos, videos, and music will be publicly viewable here.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>&copy; <span id="year">2026</span> Siddharth Adhikary. All rights reserved.</p>
+      <a href="index.html#top">Return home</a>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+  <script src="mobile-nav.js"></script>
+  <script type="module" src="gallery.js"></script>
+</body>
+</html>

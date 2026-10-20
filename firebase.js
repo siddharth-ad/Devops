@@ -2,21 +2,39 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/fireba
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   getFirestore,
   onSnapshot,
+  orderBy,
+  query,
   serverTimestamp,
-  doc,
+  setDoc,
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-import { firebaseConfig } from "./firebase-config.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref as storageRef,
+  uploadBytesResumable,
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+import { firebaseConfig, galleryOwnerUid } from "./firebase-config.js";
 
 const isFirebaseConfigured = () =>
   Object.values(firebaseConfig).every(
     (value) => typeof value === "string" && value.length > 0 && !value.startsWith("YOUR_"),
   );
 
-const db = isFirebaseConfigured()
-  ? getFirestore(initializeApp(firebaseConfig))
-  : null;
+const app = isFirebaseConfigured() ? initializeApp(firebaseConfig) : null;
+const db = app ? getFirestore(app) : null;
+const auth = app ? getAuth(app) : null;
+const storage = app ? getStorage(app) : null;
 
 function requireDatabase() {
   if (!db) {
@@ -26,6 +44,108 @@ function requireDatabase() {
 }
 
 export { isFirebaseConfigured };
+
+export const isGalleryOwnerConfigured = () =>
+  typeof galleryOwnerUid === "string" &&
+  galleryOwnerUid.length > 0 &&
+  !galleryOwnerUid.startsWith("YOUR_");
+
+export function watchGalleryItems(onItems, onError) {
+  const database = requireDatabase();
+  const galleryQuery = query(
+    collection(database, "galleryItems"),
+    orderBy("createdAt", "desc"),
+  );
+  return onSnapshot(
+    galleryQuery,
+    (snapshot) => onItems(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))),
+    onError,
+  );
+}
+
+export function watchGalleryAuth(onUser, onError) {
+  if (!auth) throw new Error("Firebase is not configured for gallery sign-in.");
+  return onAuthStateChanged(auth, onUser, onError);
+}
+
+export async function signInGalleryOwner(email, password) {
+  if (!auth) throw new Error("Firebase is not configured for gallery sign-in.");
+  const credential = await signInWithEmailAndPassword(auth, email, password);
+  if (!isGalleryOwnerConfigured() || credential.user.uid !== galleryOwnerUid) {
+    await signOut(auth);
+    throw new Error("This account is not authorized to manage the gallery.");
+  }
+  return credential.user;
+}
+
+export async function signOutGalleryOwner() {
+  if (!auth) throw new Error("Firebase is not configured for gallery sign-in.");
+  await signOut(auth);
+}
+
+export async function uploadGalleryItem({ file, title, description, type, onProgress }) {
+  const database = requireDatabase();
+  if (!auth?.currentUser || !storage || !isGalleryOwnerConfigured()) {
+    throw new Error("Sign in with the configured gallery owner account before uploading.");
+  }
+
+  const user = auth.currentUser;
+  if (user.uid !== galleryOwnerUid) {
+    throw new Error("This account is not authorized to manage the gallery.");
+  }
+
+  const itemId = crypto.randomUUID();
+  const safeName = file.name.replace(/[^\w.-]+/g, "-").slice(-120) || "media";
+  const fileRef = storageRef(storage, `gallery/${user.uid}/${itemId}-${safeName}`);
+  const uploadTask = uploadBytesResumable(fileRef, file, { contentType: file.type });
+  await new Promise((resolve, reject) => {
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => onProgress?.(snapshot.bytesTransferred / snapshot.totalBytes),
+      reject,
+      resolve,
+    );
+  });
+
+  const downloadURL = await getDownloadURL(fileRef);
+  try {
+    await setDoc(doc(database, "galleryItems", itemId), {
+      ownerUid: user.uid,
+      type,
+      title,
+      description,
+      storagePath: fileRef.fullPath,
+      downloadURL,
+      contentType: file.type,
+      createdAt: serverTimestamp(),
+    });
+  } catch (error) {
+    try {
+      await deleteObject(fileRef);
+    } catch (cleanupError) {
+      console.error("Could not clean up uploaded gallery media after metadata save failed:", cleanupError);
+    }
+    throw error;
+  }
+}
+
+export async function deleteGalleryItem(item) {
+  const database = requireDatabase();
+  if (!auth?.currentUser || !storage || !isGalleryOwnerConfigured()) {
+    throw new Error("Sign in with the configured gallery owner account before deleting media.");
+  }
+  if (auth.currentUser.uid !== galleryOwnerUid || item.ownerUid !== auth.currentUser.uid) {
+    throw new Error("This account is not authorized to manage the gallery.");
+  }
+
+  await deleteDoc(doc(database, "galleryItems", item.id));
+  try {
+    await deleteObject(storageRef(storage, item.storagePath));
+  } catch (error) {
+    console.error("Gallery item metadata was deleted, but its storage file could not be removed:", error);
+    throw new Error("The gallery item was removed, but its file could not be deleted from storage. Check Firebase Storage.");
+  }
+}
 
 export function watchSiteContent(onContent, onError) {
   const database = requireDatabase();
