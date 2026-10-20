@@ -99,13 +99,14 @@
 
   // 3) Move the chips along the loop
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let offset = 0, last = performance.now(), paused = false;
+  const compactLayout = window.matchMedia("(max-width: 600px)").matches;
+  let offset = 0, last = 0, paused = false, inView = true, animationFrame = 0;
   const SPEED = 0.18;                  // radians per second (raise for faster)
 
   function place() {
     chips.forEach(function (chip, i) {
       const p = point(offset + (i * Math.PI * 2) / chips.length);
-      const scale = 1 + 0.28 * p.depth;                       // front = bigger
+      const scale = 1 + (compactLayout ? 0.16 : 0.28) * p.depth; // front = bigger
       chip.style.left = (p.x / W) * 100 + "%";
       chip.style.top = (p.y / H) * 100 + "%";
       chip.style.transform = "scale(" + scale.toFixed(2) + ")";
@@ -115,14 +116,42 @@
   }
 
   function frame(now) {
-    const dt = (now - last) / 1000;
+    const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
     if (!paused && !reduceMotion) offset += SPEED * dt;
     place();
-    requestAnimationFrame(frame);
+    animationFrame = requestAnimationFrame(frame);
   }
+
+  function startAnimation() {
+    if (reduceMotion || !inView || document.hidden || animationFrame) return;
+    last = performance.now();
+    animationFrame = requestAnimationFrame(frame);
+  }
+
+  function stopAnimation() {
+    if (!animationFrame) return;
+    cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+  }
+
   place();
-  requestAnimationFrame(frame);
+
+  if ("IntersectionObserver" in window) {
+    const visibilityObserver = new IntersectionObserver(function (entries) {
+      inView = entries[0].isIntersecting;
+      if (inView) startAnimation();
+      else stopAnimation();
+    });
+    visibilityObserver.observe(box);
+  } else {
+    startAnimation();
+  }
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) stopAnimation();
+    else startAnimation();
+  });
 
   // Pause while the mouse is over the loop
   box.addEventListener("mouseenter", function () { paused = true; });
