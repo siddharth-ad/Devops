@@ -986,6 +986,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   z-index: 2;
   height: 220px;
   margin-top: 40px;
+  background: transparent;
 }
 
 .github-buddies {
@@ -993,6 +994,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   height: 160px;
   margin-top: 20px;
   overflow: visible;
+  background: transparent;
 }
 
 .github-buddies .robot {
@@ -1053,6 +1055,16 @@ ul { margin: 0; padding: 0; list-style: none; }
   align-items: center;
   justify-content: center;
   gap: 14px;
+}
+.robot-smile {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 16px;
+  height: 7px;
+  border-bottom: 2px solid #8AF0FF;
+  border-radius: 0 0 12px 12px;
+  transform: translateX(-50%);
 }
 .visor i {
   width: 8px;
@@ -1121,6 +1133,15 @@ ul { margin: 0; padding: 0; list-style: none; }
   border-radius: 50%;
   background: #FF7A1A;
 }
+.d-smile {
+  position: absolute;
+  left: 17px;
+  top: 29px;
+  width: 12px;
+  height: 6px;
+  border-bottom: 2px solid #8A3B00;
+  border-radius: 0 0 10px 10px;
+}
 
 /* ----- Kitten ----- */
 .cat {
@@ -1170,6 +1191,16 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .cat::before { left: 12px; }
 .cat::after  { right: 12px; }
+.c-smile {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: 15px;
+  height: 8px;
+  border-bottom: 2px solid #672A7E;
+  border-radius: 0 0 12px 12px;
+  transform: translateX(-50%);
+}
 
 /* Phones: a little less height */
 @media (max-width: 600px) {
