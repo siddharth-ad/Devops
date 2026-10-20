@@ -280,7 +280,82 @@ function fillRow(rowId, list) {
 // Put all the tools in one row
 fillRow("toolsRow1", TOOLS);
 
+// Reveal content as it enters the viewport and reset it when it leaves,
+// so the same motion plays in reverse when visitors scroll back up.
+const scrollRevealItems = document.querySelectorAll(
+  ".hero-grid > *, .spotlight-inner > *, .tools-wall, " +
+  "#services .section-title, #services .service, " +
+  "#work .section-title, #work .project, " +
+  "#about .about-grid > *, #contact .contact-grid > *, .site-footer .footer-inner",
+);
 
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (
+  "IntersectionObserver" in window &&
+  !prefersReducedMotion
+) {
+  let scrollDirection = "down";
+  let lastScrollY = window.scrollY;
+
+  window.addEventListener("scroll", () => {
+    const currentScrollY = window.scrollY;
+    if (currentScrollY !== lastScrollY) {
+      scrollDirection = currentScrollY > lastScrollY ? "down" : "up";
+      lastScrollY = currentScrollY;
+    }
+  }, { passive: true });
+
+  const scrollRevealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.dataset.scrollDirection = scrollDirection;
+        entry.target.classList.toggle("is-visible", entry.isIntersecting);
+      });
+    },
+    { threshold: 0.08, rootMargin: "-8% 0px -8% 0px" },
+  );
+
+  scrollRevealItems.forEach((item) => {
+    const siblingIndex = Array.from(item.parentElement.children).indexOf(item);
+    item.style.setProperty("--reveal-order", String(Math.min(siblingIndex, 3)));
+    item.classList.add("scroll-reveal");
+    scrollRevealObserver.observe(item);
+  });
+}
+
+if (!prefersReducedMotion) {
+  const spotlight = document.getElementById("spotlight");
+  const parallaxLayers = spotlight
+    ? [
+        [spotlight.querySelector(".glow"), -34],
+        [spotlight.querySelector(".stars"), 18],
+      ]
+    : [];
+  let parallaxFrame = 0;
+
+  const updateParallax = () => {
+    parallaxFrame = 0;
+    if (!spotlight) return;
+
+    const bounds = spotlight.getBoundingClientRect();
+    const distanceFromCenter =
+      (bounds.top + bounds.height / 2 - window.innerHeight / 2) / window.innerHeight;
+    const progress = Math.max(-1, Math.min(1, distanceFromCenter));
+
+    parallaxLayers.forEach(([layer, strength]) => {
+      layer?.style.setProperty("--scroll-parallax", `${progress * strength}px`);
+    });
+  };
+
+  const scheduleParallaxUpdate = () => {
+    if (!parallaxFrame) parallaxFrame = window.requestAnimationFrame(updateParallax);
+  };
+
+  window.addEventListener("scroll", scheduleParallaxUpdate, { passive: true });
+  window.addEventListener("resize", scheduleParallaxUpdate);
+  scheduleParallaxUpdate();
+}
 
 
 

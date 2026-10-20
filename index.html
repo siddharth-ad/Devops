@@ -38,7 +38,7 @@
 
   <main id="main">
 
-    <!-- ================= HERO ================= -->
+        <!-- ================= HERO ================= -->
     <section class="hero" id="top">
       <div class="wrap hero-grid">
 
@@ -52,16 +52,27 @@
             <a class="btn btn-ghost" href="#contact" data-site-content="heroSecondaryLabel">Explore my project</a>
           </div>
         </div>
-        <!-- EDIT: quick facts. This is the one "memorable" element of the hero. -->
-        <aside class="facts reveal" style="--i:3" aria-label="Quick facts">
-          <p class="status"><span class="dot" aria-hidden="true"></span> <span data-site-content="statusText">Here is my "Devops" projects</span></p>
-          <dl>
-            <div><dt>Based in</dt><dd data-site-content="factLocation">AWS, GCP, AZURE</dd></div>
-            <div><dt>Type of project</dt><dd data-site-content="factProjectType">Terraform , kubernative , jenkings , </dd></div>
-            <div><dt>I reply within</dt><dd data-site-content="factReplyTime">1 working day</dd></div>
-            <div><dt>Works with</dt><dd data-site-content="factTools">Jenkings, Docker, Kubernetes, Ansible,</dd></div>
-          </dl>
-        </aside>
+
+        <div class="hero-side">
+
+          <!-- Infinity animation (transparent) -->
+          <div class="infinity" id="infinity" aria-label="27 DevOps tools orbiting an infinity loop">
+            <div class="infinity-stage" id="infinityStage"></div>
+          </div>
+          <p class="infinity-name" id="infinityName" aria-live="polite">DevOps Cycles</p>
+
+          <aside class="facts reveal" style="--i:3" aria-label="Quick facts">
+            <p class="status"><span class="dot" aria-hidden="true"></span> <span data-site-content="statusText">Here is my "Devops" projects</span></p>
+            <dl>
+              <div><dt>Based in</dt><dd data-site-content="factLocation">AWS, GCP, AZURE</dd></div>
+              <div><dt>Type of project</dt><dd data-site-content="factProjectType">Terraform , kubernative , jenkings , </dd></div>
+              <div><dt>I reply within</dt><dd data-site-content="factReplyTime">1 working day</dd></div>
+              <div><dt>Works with</dt><dd data-site-content="factTools">Jenkings, Docker, Kubernetes, Ansible,</dd></div>
+            </dl>
+          </aside>
+
+        </div>
+
       </div>
     </section>
 
@@ -145,6 +156,9 @@
         <div class="auto-track">
           <img src="sid.png"  alt="CI/CD infinity loop diagram">
           <img src="sid 2.png" alt="Second project image">
+
+          <img src="sid 3.webp" alt="Third project image">
+          <img src="sid 4.webp" alt="Fourth project image">
           <img src="sid.png"  alt="" aria-hidden="true">
         </div>
       </div>
@@ -309,20 +323,6 @@
 
   <script src="script.js"></script>
   <script src="mascot.js"></script>
+  <script src="infinity.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
