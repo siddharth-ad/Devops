@@ -50,6 +50,9 @@ export const isGalleryOwnerConfigured = () =>
   galleryOwnerUid.length > 0 &&
   !galleryOwnerUid.startsWith("YOUR_");
 
+export const isGalleryOwner = (user) =>
+  Boolean(user && isGalleryOwnerConfigured() && user.uid === galleryOwnerUid);
+
 export function watchGalleryItems(onItems, onError) {
   const database = requireDatabase();
   const galleryQuery = query(
@@ -71,9 +74,9 @@ export function watchGalleryAuth(onUser, onError) {
 export async function signInGalleryOwner(email, password) {
   if (!auth) throw new Error("Firebase is not configured for gallery sign-in.");
   const credential = await signInWithEmailAndPassword(auth, email, password);
-  if (!isGalleryOwnerConfigured() || credential.user.uid !== galleryOwnerUid) {
+  if (!isGalleryOwner(credential.user)) {
     await signOut(auth);
-    throw new Error("This account is not authorized to manage the gallery.");
+    throw new Error("This Firebase account's UID does not match the configured gallery owner UID.");
   }
   return credential.user;
 }
@@ -90,7 +93,7 @@ export async function uploadGalleryItem({ file, title, description, type, onProg
   }
 
   const user = auth.currentUser;
-  if (user.uid !== galleryOwnerUid) {
+  if (!isGalleryOwner(user)) {
     throw new Error("This account is not authorized to manage the gallery.");
   }
 
@@ -134,7 +137,7 @@ export async function deleteGalleryItem(item) {
   if (!auth?.currentUser || !storage || !isGalleryOwnerConfigured()) {
     throw new Error("Sign in with the configured gallery owner account before deleting media.");
   }
-  if (auth.currentUser.uid !== galleryOwnerUid || item.ownerUid !== auth.currentUser.uid) {
+  if (!isGalleryOwner(auth.currentUser) || item.ownerUid !== auth.currentUser.uid) {
     throw new Error("This account is not authorized to manage the gallery.");
   }
 

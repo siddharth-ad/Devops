@@ -1,6 +1,7 @@
 import {
   deleteGalleryItem,
   isFirebaseConfigured,
+  isGalleryOwner,
   isGalleryOwnerConfigured,
   signInGalleryOwner,
   signOutGalleryOwner,
@@ -193,6 +194,9 @@ function renderQueue() {
 }
 
 function authErrorMessage(error) {
+  if (error.message?.includes("UID does not match")) {
+    return "This Firebase account is not the configured gallery owner. Verify its UID in Firebase Authentication matches firebase-config.js and both published rules.";
+  }
   switch (error.code) {
     case "auth/invalid-credential":
     case "auth/wrong-password":
@@ -209,8 +213,34 @@ function authErrorMessage(error) {
   }
 }
 
+function uploadErrorMessage(error) {
+  switch (error.code) {
+    case "storage/unauthorized":
+    case "storage/unauthenticated":
+      return "Firebase Storage denied this upload. Publish storage.rules and confirm the signed-in account UID matches the configured gallery owner.";
+    case "permission-denied":
+    case "firestore/permission-denied":
+      return "Firestore denied saving this item's details. Publish firestore.rules and confirm the configured gallery owner UID.";
+    case "storage/bucket-not-found":
+      return "The Firebase Storage bucket was not found. Create the project's Storage bucket and verify storageBucket in firebase-config.js.";
+    case "storage/retry-limit-exceeded":
+      return "The upload stopped after repeated network errors. Check your connection and try again.";
+    case "storage/canceled":
+      return "The upload was canceled.";
+    default:
+      return error.message || "Check Firebase Storage and Firestore setup, then try again.";
+  }
+}
+
+function galleryReadErrorMessage(error) {
+  if (error.code === "permission-denied" || error.code === "firestore/permission-denied") {
+    return "Firestore denied public gallery access. Publish firestore.rules to project devops-10bda, then reload this page.";
+  }
+  return "Could not load the gallery. Check your connection and Firebase configuration.";
+}
+
 function updateOwnerControls(user) {
-  isOwner = Boolean(user && isGalleryOwnerConfigured());
+  isOwner = isGalleryOwner(user);
   loginForm.hidden = isOwner;
   uploadForm.hidden = !isOwner;
   signOutButton.hidden = !isOwner;
@@ -336,7 +366,7 @@ uploadForm.addEventListener("submit", async (event) => {
       } catch (error) {
         entry.uploading = false;
         console.error(`Could not upload gallery file ${entry.file.name}:`, error);
-        setStatus(`${entry.file.name} could not be uploaded: ${error.message || "Check Firebase Storage rules and try again."}`, true);
+        setStatus(`${entry.file.name} could not be uploaded: ${uploadErrorMessage(error)}`, true);
         renderQueue();
         return;
       }
@@ -371,14 +401,14 @@ if (!isFirebaseConfigured()) {
       },
       (error) => {
         console.error("Could not load public gallery media:", error);
-        setStatus("Could not load the gallery. Check the published Firestore rules and your connection.", true);
+        setStatus(galleryReadErrorMessage(error), true);
       },
     );
     watchGalleryAuth(
       (user) => {
         updateOwnerControls(user?.uid === undefined ? null : user);
-        if (user && !isOwner) {
-          setStatus("This account is not authorized to manage the gallery.", true);
+        if (user && !isGalleryOwner(user)) {
+          setStatus("This signed-in Firebase account is not the configured gallery owner. Use the owner account with the UID configured in firebase-config.js.", true);
         }
       },
       (error) => {
