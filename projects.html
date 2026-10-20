@@ -23,10 +23,15 @@
   <header class="site-header projects-header">
     <div class="wrap header-inner">
       <a class="brand" href="index.html#top">Siddharth Adhikary</a>
-      <nav class="site-nav" aria-label="Main">
-        <a href="projects.html" aria-current="page">Projects</a>
-        <a href="index.html#work">Work</a>
-        <a href="index.html#about">About</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav">
+        Menu
+      </button>
+      <nav class="site-nav" id="siteNav" aria-label="Main">
+        <a href="index.html#top">Home</a>
+        <a href="projects.html" aria-current="page">Services</a>
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="social.html">Social Media</a>
         <a class="nav-cta" href="index.html#contact">Contact</a>
       </nav>
     </div>
@@ -103,5 +108,6 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <script src="mobile-nav.js"></script>
 </body>
 </html>

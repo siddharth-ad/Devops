@@ -35,14 +35,15 @@
     <div class="wrap header-inner">
       <a class="brand" href="#top" data-site-content="brandName">Siddharth Adhikary</a>
 
-      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav">
         Menu
       </button>
 
       <nav class="site-nav" id="siteNav" aria-label="Main">
         <a href="projects.html">Services</a>
-        <a href="#work">Work</a>
-        <a href="#about">About</a>
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="social.html">Social Media</a>
         <a class="nav-cta" href="#contact">Contact</a>
       </nav>
     </div>
@@ -279,35 +280,6 @@
     </section>
 
 
-    <!-- ================= ABOUT ================= -->
-    <section class="section" id="about">
-      <div class="wrap about-grid">
-        <!-- EDIT: replace the initials block with your photo:
-             <img class="portrait" src="images/me.jpg" alt="Photo of Your Name"> -->
-        <div class="portrait" role="img" aria-label="Portrait placeholder" data-site-content="portraitText">YN</div>
-
-        <div>
-          <h2 class="section-title" data-site-content="aboutTitle">About me</h2>
-          <p class="about-text" data-site-content="aboutParagraphOne">
-            I'm a web developer and designer with 5 years of experience helping small businesses
-            get online. I care about sites that are easy to understand, quick to load and simple
-            to maintain.
-          </p>
-          <p class="about-text" data-site-content="aboutParagraphTwo">
-            Before web design I worked in customer support, so I write and build with the
-            visitor's questions in mind. When I'm not working I'm usually hiking or trying to
-            fix my own bicycle.
-          </p>
-
-          <h3 class="skills-title" data-site-content="skillsTitle">Tools I use every day</h3>
-          <ul class="tags tags-lg" data-site-tags="skillsTags">
-            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Git and GitHub</li>
-            <li>Figma</li><li>WordPress</li><li>SEO</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
     <!-- ================= CONTACT ================= -->
     <section class="section section-alt" id="contact">
       <div class="wrap contact-grid">
@@ -392,6 +364,8 @@
 </section>
 
   <script src="script.js"></script>
+  <script src="mobile-nav.js"></script>
+  <script type="module" src="site-content.js"></script>
   <script src="mascot.js"></script>
   <script src="infinity.js"></script>
   <script src="favicon.js"></script>

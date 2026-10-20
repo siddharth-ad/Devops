@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-site-content="aboutTitle">About me | Siddharth Adhikary</title>
+  <meta name="description" content="Learn about Siddharth Adhikary, his experience, approach, and tools.">
+  <link rel="canonical" href="https://siddharth-ad.github.io/Devops/about.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://siddharth-ad.github.io/Devops/about.html">
+  <meta property="og:title" content="About | Siddharth Adhikary">
+  <meta property="og:description" content="Learn about Siddharth Adhikary, his experience, approach, and tools.">
+  <meta property="og:image" content="https://siddharth-ad.github.io/Devops/sid.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="projects-page about-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header projects-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html#top">Siddharth Adhikary</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav">
+        Menu
+      </button>
+      <nav class="site-nav" id="siteNav" aria-label="Main">
+        <a href="index.html#top">Home</a>
+        <a href="projects.html">Services</a>
+        <a href="work.html">Work</a>
+        <a href="about.html" aria-current="page">About</a>
+        <a href="social.html">Social Media</a>
+        <a class="nav-cta" href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="projects-intro">
+      <div class="wrap">
+        <p class="projects-eyebrow">ABOUT · APPROACH · TOOLKIT</p>
+        <h1 data-site-content="aboutTitle">About me</h1>
+        <p>Learn more about my background, how I approach projects, and the tools I work with.</p>
+      </div>
+    </section>
+
+    <section class="section about-page-content">
+      <div class="wrap about-grid">
+        <div class="portrait" role="img" aria-label="Portrait placeholder" data-site-content="portraitText">YN</div>
+        <div class="about-page-copy">
+          <p class="about-text" data-site-content="aboutParagraphOne">
+            I'm a web developer and designer with 5 years of experience helping small businesses
+            get online. I care about sites that are easy to understand, quick to load and simple
+            to maintain.
+          </p>
+          <p class="about-text" data-site-content="aboutParagraphTwo">
+            Before web design I worked in customer support, so I write and build with the
+            visitor's questions in mind. When I'm not working I'm usually hiking or trying to
+            fix my own bicycle.
+          </p>
+
+          <h2 class="skills-title" data-site-content="skillsTitle">Tools I use every day</h2>
+          <ul class="tags tags-lg" data-site-tags="skillsTags">
+            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Git and GitHub</li>
+            <li>Figma</li><li>WordPress</li><li>SEO</li>
+          </ul>
+          <a class="btn btn-primary about-contact-link" href="index.html#contact">Let's work together</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>&copy; <span id="year">2026</span> Siddharth Adhikary. All rights reserved.</p>
+      <a href="index.html#top">Return home</a>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+  <script src="mobile-nav.js"></script>
+  <script type="module" src="site-content.js"></script>
+</body>
+</html>

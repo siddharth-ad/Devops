@@ -1,20 +1,3 @@
-// ===== Mobile menu =====
-const navToggle = document.getElementById("navToggle");
-const siteNav = document.getElementById("siteNav");
-
-navToggle.addEventListener("click", () => {
-  const isOpen = siteNav.classList.toggle("open");
-  navToggle.setAttribute("aria-expanded", String(isOpen));
-});
-
-// Close the menu after tapping a link
-siteNav.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
-    siteNav.classList.remove("open");
-    navToggle.setAttribute("aria-expanded", "false");
-  });
-});
-
 // ===== Footer year (updates itself every January) =====
 document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -80,127 +63,6 @@ form.addEventListener("submit", async (event) => {
     submitButton.disabled = false;
   }
 });
-
-// ===== Load editable page content from Firestore =====
-function applySiteContent(content) {
-  document.querySelectorAll("[data-site-content]").forEach((element) => {
-    const key = element.dataset.siteContent;
-    const value = content[key];
-    if (typeof value !== "string" || !value.trim()) return;
-
-    if (element instanceof HTMLMetaElement) {
-      element.content = value;
-    } else {
-      element.textContent = value;
-    }
-  });
-
-  document.querySelectorAll("[data-site-href]").forEach((element) => {
-    const key = element.dataset.siteHref;
-    const value = content[key];
-    if (typeof value !== "string" || !value.trim()) return;
-
-    if (key === "contactEmail") {
-      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        element.href = "mailto:" + value;
-      } else {
-        console.error("Invalid contactEmail in Firestore siteContent/portfolio.");
-      }
-      return;
-    }
-
-    try {
-      const url = new URL(value);
-      if (url.protocol === "https:" || url.protocol === "http:") {
-        element.href = url.href;
-      } else {
-        console.error("Only HTTP(S) URLs are allowed for Firestore content field:", key);
-      }
-    } catch (error) {
-      console.error("Invalid URL in Firestore content field:", key, error);
-    }
-  });
-
-  document.querySelectorAll("[data-site-tags]").forEach((element) => {
-    const key = element.dataset.siteTags;
-    const tags = content[key];
-    if (!Array.isArray(tags) || !tags.every((tag) => typeof tag === "string")) return;
-
-    element.replaceChildren(...tags.slice(0, 12).map((tag) => {
-      const item = document.createElement("li");
-      item.textContent = tag.slice(0, 50);
-      return item;
-    }));
-  });
-}
-
-import("./firebase.js")
-  .then(({ isFirebaseConfigured, watchSiteContent }) => {
-    if (!isFirebaseConfigured()) {
-      console.info("Firebase is not configured yet. The website is using its built-in content.");
-      return;
-    }
-
-    watchSiteContent(
-      (content) => {
-        if (!content) {
-          console.warn("Firestore document siteContent/portfolio does not exist; using built-in content.");
-          return;
-        }
-        applySiteContent(content);
-      },
-      (error) => console.error("Could not load live website content from Firebase:", error),
-    );
-  })
-  .catch((error) => console.error("Could not initialize the Firebase content integration:", error));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ===== Tools wall (logos + animation) =====
 // Format: [ "Name", "logo name on simpleicons.org", "colour without #" ]
@@ -286,7 +148,7 @@ const scrollRevealItems = document.querySelectorAll(
   ".hero-grid > *, .spotlight-inner > *, .tools-wall, " +
   "#services .section-title, #services .service, " +
   "#work .section-title, #work .project, " +
-  "#about .about-grid > *, #contact .contact-grid > *, .site-footer .footer-inner",
+  "#contact .contact-grid > *, .site-footer .footer-inner",
 );
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -456,13 +318,13 @@ if (!prefersReducedMotion) {
     "zipkin": "Zipkin is a distributed tracing tool. It shows how a request travels through microservices.",
   };
 
-  // keys = words that trigger the answer. go = optional button [section, label]
+  // keys = words that trigger the answer. go = optional button [selector or page, label]
   const INTENTS = [
     { keys: ["hi", "hello", "hey", "hii", "good morning", "good evening"],
       answer: "Hi! I'm the DevOps assistant on Siddharth's portfolio. Ask me about his projects, tools or how to get in touch." },
     { keys: ["who are you", "about", "siddharth", "yourself", "owner", "who is"],
       answer: "This is the portfolio of Siddharth Adhikary. He builds and showcases DevOps projects covering CI/CD, Infrastructure as Code and containers.",
-      go: ["#about", "Go to About"] },
+      go: ["about.html", "Go to About"] },
     { keys: ["project", "projects", "work", "portfolio", "built"],
       answer: "Projects on this site:\n• CI/CD Pipeline (Git, GitHub Actions, automated deployment)\n• Exploring Projects (web, DevOps and automation)\n• Main agenda of a DevOps Engineer",
       go: ["#work", "See the projects"] },
@@ -538,8 +400,12 @@ if (!prefersReducedMotion) {
       btn.className = "bot-go";
       btn.textContent = go[1];
       btn.addEventListener("click", () => {
-        const target = document.querySelector(go[0]);
-        if (target) target.scrollIntoView({ behavior: "smooth" });
+        if (go[0].startsWith("#")) {
+          const target = document.querySelector(go[0]);
+          if (target) target.scrollIntoView({ behavior: "smooth" });
+        } else {
+          window.location.href = go[0];
+        }
         if (window.innerWidth < 600) closeChat();
       });
       msg.appendChild(btn);
