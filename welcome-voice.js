@@ -1,36 +1,37 @@
 (() => {
-  const button = document.getElementById("welcomeVoiceButton");
-  const label = document.getElementById("welcomeVoiceLabel");
   const audio = document.getElementById("welcomeAudio");
-  if (!button || !label || !audio) return;
+  const mascot = document.getElementById("mascot");
+  if (!audio || !mascot) return;
+
+  let hasPlayed = false;
 
   function playWelcome() {
-    audio.pause();
-    audio.currentTime = 0;
-
+    if (hasPlayed) return;
+    hasPlayed = true;
     const playback = audio.play();
-    if (playback && typeof playback.catch === "function") {
-      playback.catch(() => {
-        label.textContent = "Tap to hear welcome";
-      });
+    if (playback && typeof playback.catch === "function") playback.catch(() => {
+      hasPlayed = false;
+    });
+  }
+
+  function onFirstInteraction() {
+    playWelcome();
+    if (hasPlayed) {
+      window.removeEventListener("pointerdown", onFirstInteraction);
+      window.removeEventListener("keydown", onFirstInteraction);
     }
   }
 
-  button.addEventListener("click", playWelcome);
-  audio.addEventListener("play", () => {
-    label.textContent = "Playing welcome...";
-    button.setAttribute("aria-label", "Welcome is playing");
-  });
-  audio.addEventListener("ended", () => {
-    label.textContent = "Hear welcome again";
-    button.setAttribute("aria-label", "Play the spoken welcome again");
-  });
-  audio.addEventListener("error", () => {
-    label.textContent = "Tap to retry welcome";
-    button.setAttribute("aria-label", "Retry the spoken welcome");
-  });
+  audio.addEventListener("play", () => mascot.classList.add("is-speaking"));
+  audio.addEventListener("pause", () => mascot.classList.remove("is-speaking"));
+  audio.addEventListener("ended", () => mascot.classList.remove("is-speaking"));
+  audio.addEventListener("error", () => mascot.classList.remove("is-speaking"));
 
   window.addEventListener("load", () => {
-    window.setTimeout(playWelcome, 500);
+    playWelcome();
+    if (!hasPlayed) {
+      window.addEventListener("pointerdown", onFirstInteraction);
+      window.addEventListener("keydown", onFirstInteraction);
+    }
   }, { once: true });
 })();
