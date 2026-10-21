@@ -2498,3 +2498,42 @@ body::before {
   .glow { --scroll-parallax: 0px; will-change: auto; }
   .stars { --scroll-parallax: 0px; will-change: auto; }
 }
+
+@media (max-width: 720px) {
+  .reveal {
+    animation: none;
+  }
+
+  .scroll-reveal,
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+
+  body::before,
+  .glow,
+  .stars span,
+  .mascot-float,
+  .mascot-shadow,
+  .mascot .ear,
+  .eye,
+  .tools-track,
+  .inf-flow,
+  .buddy,
+  .c-ears {
+    animation: none !important;
+  }
+
+  body::before,
+  .stars {
+    transform: none;
+  }
+
+  .tools-row { overflow-x: auto; }
+  .tools-track { transform: none !important; }
+  .inf-glow { filter: none; }
+  .inf-chip { will-change: auto; box-shadow: none; }
+}

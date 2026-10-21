@@ -118,12 +118,21 @@ function makeToolCard([name, logo, color]) {
   card.className = "tool-card";
   card.style.setProperty("--c", "#" + color);
 
+  if (window.matchMedia("(max-width: 600px)").matches) {
+    const badge = document.createElement("span");
+    badge.className = "tool-badge";
+    badge.textContent = name.charAt(0);
+    card.append(badge, name);
+    return card;
+  }
+
   const img = document.createElement("img");
   // If the logo name contains a dot (like "logos/wiz.svg") use your own file,
   // otherwise load it from Simple Icons
-  img.src = logo.includes(".") ? logo : "https://cdn.simpleicons.org/" + logo + "/" + color;
   img.alt = "";
   img.loading = "lazy";
+  img.decoding = "async";
+  img.src = logo.includes(".") ? logo : "https://cdn.simpleicons.org/" + logo + "/" + color;
 
   // If the logo is missing, show a coloured letter instead
   img.addEventListener("error", () => {
@@ -186,6 +195,7 @@ if (
 
   const scrollRevealObserver = new IntersectionObserver(
     (entries) => {
+      clearTimeout(scrollRevealFallback);
       entries.forEach((entry) => {
         entry.target.dataset.scrollDirection = scrollDirection;
         entry.target.classList.toggle("is-visible", entry.isIntersecting);
@@ -193,6 +203,11 @@ if (
     },
     { threshold: 0.08, rootMargin: "-8% 0px -8% 0px" },
   );
+
+  const scrollRevealFallback = window.setTimeout(() => {
+    scrollRevealItems.forEach((item) => item.classList.add("is-visible"));
+    scrollRevealObserver.disconnect();
+  }, 1500);
 
   scrollRevealItems.forEach((item) => {
     const siblingIndex = Array.from(item.parentElement.children).indexOf(item);

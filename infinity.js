@@ -35,6 +35,7 @@
     ["Zipkin", "zipkin", "FE7139"],
   ];
 
+  const compactLayout = window.matchMedia("(max-width: 600px)").matches;
   const W = 400, H = 200;
   const AY = (H * 0.4) / 0.3536;      // makes the loop 80% of the box height
   const AX = W * 0.46;
@@ -78,9 +79,21 @@
     chip.setAttribute("role", "img");
     chip.setAttribute("aria-label", name);
 
+    if (compactLayout) {
+      const badge = document.createElement("span");
+      badge.className = "tool-badge";
+      badge.style.setProperty("--c", "#" + color);
+      badge.textContent = name.charAt(0);
+      chip.appendChild(badge);
+      stage.appendChild(chip);
+      return chip;
+    }
+
     const img = document.createElement("img");
-    img.src = "https://cdn.simpleicons.org/" + logo + "/" + color;
     img.alt = "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.src = "https://cdn.simpleicons.org/" + logo + "/" + color;
     img.addEventListener("error", function () {
       const badge = document.createElement("span");
       badge.className = "tool-badge";
@@ -99,7 +112,7 @@
 
   // 3) Move the chips along the loop
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const compactLayout = window.matchMedia("(max-width: 600px)").matches;
+  const pauseAnimation = reduceMotion || compactLayout;
   let offset = 0, last = 0, paused = false, inView = true, animationFrame = 0;
   const SPEED = 0.18;                  // radians per second (raise for faster)
 
@@ -116,15 +129,20 @@
   }
 
   function frame(now) {
-    const dt = Math.min((now - last) / 1000, 0.05);
+    const elapsed = now - last;
+    if (elapsed < 1000 / 30) {
+      animationFrame = requestAnimationFrame(frame);
+      return;
+    }
+    const dt = Math.min(elapsed / 1000, 0.05);
     last = now;
-    if (!paused && !reduceMotion) offset += SPEED * dt;
+    if (!paused && !pauseAnimation) offset += SPEED * dt;
     place();
     animationFrame = requestAnimationFrame(frame);
   }
 
   function startAnimation() {
-    if (reduceMotion || !inView || document.hidden || animationFrame) return;
+    if (pauseAnimation || !inView || document.hidden || animationFrame) return;
     last = performance.now();
     animationFrame = requestAnimationFrame(frame);
   }
