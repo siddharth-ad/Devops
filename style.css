@@ -1084,6 +1084,22 @@ ul { margin: 0; padding: 0; list-style: none; }
 .spotlight-inner { position: relative; z-index: 2; display: grid; justify-items: center; }
 .spotlight h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-top: 48px; max-width: 18ch; }
 .spotlight p  { margin-top: 18px; max-width: 54ch; font-size: 1.15rem; color: var(--muted); }
+.welcome-voice-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  padding: 10px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  background: var(--surface);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.welcome-voice-button:hover { background: var(--accent-soft); }
+.welcome-voice-button:disabled { cursor: wait; opacity: 0.7; }
 
 /* Purple glow at the bottom */
 .glow {
