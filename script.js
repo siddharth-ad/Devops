@@ -25,7 +25,7 @@ function getContactErrorMessage(error) {
       return "Firestore setup is incomplete. Check that the database exists and its rules are published.";
     case "invalid-argument":
     case "firestore/invalid-argument":
-      return "Firebase rejected the message format. Check the Firestore rules and Trigger Email extension setup.";
+      return "Firebase rejected the message format. Check the Firestore rules.";
     case "resource-exhausted":
     case "firestore/resource-exhausted":
       return "Firebase has reached a usage limit. Check the project quota and billing status.";
@@ -46,15 +46,26 @@ form.addEventListener("submit", async (event) => {
   try {
     const { saveContactMessage } = await import("./firebase.js");
     const values = new FormData(form);
-    await saveContactMessage({
+    const contactMessage = {
       name: String(values.get("name") ?? "").trim(),
       email: String(values.get("email") ?? "").trim(),
       message: String(values.get("message") ?? "").trim(),
-    });
+    };
+    await saveContactMessage(contactMessage);
 
-    statusText.textContent = "Your message was submitted. An email notification is queued.";
-    statusText.classList.add("ok");
     form.reset();
+    try {
+      const { sendContactNotification } = await import("./email-notifications.js");
+      await sendContactNotification(contactMessage);
+      statusText.textContent = "Your message was saved in Firebase and the email notification was accepted for delivery.";
+      statusText.classList.add("ok");
+    } catch (emailError) {
+      console.error("Firebase saved the contact message, but email delivery failed:", emailError);
+      statusText.textContent = emailError.message?.includes("not configured")
+        ? "Your message was saved in Firebase, but email is not configured yet. Add your EmailJS service ID, template ID, and public key to emailjs-config.js."
+        : "Your message was saved in Firebase, but the email notification could not be sent. Check EmailJS settings and try again later.";
+      statusText.classList.add("error");
+    }
   } catch (error) {
     console.error("Firebase contact form submission failed:", error);
     statusText.textContent = getContactErrorMessage(error);

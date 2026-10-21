@@ -52,59 +52,5 @@ service cloud.firestore {
         && request.resource.data.createdAt == request.time;
       allow get, list, update, delete: if false;
     }
-
-    match /galleryItems/{itemId} {
-      allow get, list: if true;
-      allow create: if request.auth != null
-        && request.auth.uid == 'vjkKrSwKYqW4BZREej4J4gM57793'
-        && request.resource.data.keys().hasAll([
-          'ownerUid',
-          'type',
-          'title',
-          'description',
-          'storagePath',
-          'downloadURL',
-          'contentType',
-          'createdAt'
-        ])
-        && request.resource.data.keys().hasOnly([
-          'ownerUid',
-          'type',
-          'title',
-          'description',
-          'storagePath',
-          'downloadURL',
-          'contentType',
-          'createdAt'
-        ])
-        && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.type in ['image', 'video', 'audio']
-        && request.resource.data.title is string
-        && request.resource.data.title.size() > 0
-        && request.resource.data.title.size() <= 120
-        && request.resource.data.description is string
-        && request.resource.data.description.size() > 0
-        && request.resource.data.description.size() <= 1000
-        && request.resource.data.storagePath is string
-        && request.resource.data.storagePath.matches(
-          'gallery/' + request.auth.uid + '/[A-Za-z0-9._-]+'
-        )
-        && request.resource.data.downloadURL is string
-        && request.resource.data.contentType is string
-        && (
-          (request.resource.data.type == 'image'
-            && request.resource.data.contentType.matches('image/.*'))
-          || (request.resource.data.type == 'video'
-            && request.resource.data.contentType.matches('video/.*'))
-          || (request.resource.data.type == 'audio'
-            && request.resource.data.contentType.matches('audio/.*'))
-        )
-        && request.resource.data.createdAt is timestamp
-        && request.resource.data.createdAt == request.time;
-      allow update: if false;
-      allow delete: if request.auth != null
-        && request.auth.uid == 'vjkKrSwKYqW4BZREej4J4gM57793'
-        && resource.data.ownerUid == request.auth.uid;
-    }
   }
 }

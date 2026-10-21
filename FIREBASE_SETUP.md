@@ -12,29 +12,33 @@ This static site uses Cloud Firestore for contact messages and live-editable pag
 ## 2. Create Firestore and publish its rules
 
 1. Open **Build → Firestore Database** and create a database.
-2. Install the official **Trigger Email from Firestore** extension (`firestore-send-email`) from **Extensions → Explore Extensions**. Select `contactMessages` as its collection path.
-3. Configure the extension with SMTP server details and a verified sender address. Set the SMTP account's recipient to `tadhikary239@gmail.com` only if the extension asks for one; each queued email document already has a fixed `to` value. Keep SMTP credentials in the extension's private configuration, never in this repository or the browser.
-4. Installing Firebase Extensions requires the Firebase project to use the **Blaze (pay-as-you-go) plan**. The extension runs as a Cloud Function and may incur charges according to Firebase and your SMTP provider's pricing.
-5. Open the Firestore **Rules** tab, replace its rules with the contents of `firestore.rules`, then click **Publish**.
-6. The rules allow public visitors to read only `siteContent/portfolio` and submit validated contact messages addressed only to `tadhikary239@gmail.com`. They do not allow the website to read messages or write page content. The email extension uses its service account to process the queue.
-7. The contact form is public and can receive spam. Add and test Firebase App Check in the site before enabling App Check enforcement; enforcing it without the App Check client will block contact-form writes.
+2. Open the Firestore **Rules** tab, replace its rules with the contents of `firestore.rules`, then click **Publish**.
+3. The rules allow public visitors to read only `siteContent/portfolio` and submit validated contact messages. They do not allow the website to read messages or write page content.
+4. Contact messages are saved in Firestore first. The website then sends a separate email notification through EmailJS; this avoids a Firebase billing-plan upgrade for email sending.
+5. The contact form is public and can receive spam. Enable any available provider-side anti-abuse controls. Never put SMTP passwords or EmailJS private access tokens in this repository.
 
-## 3. Set up the public media gallery and owner uploads
+## 3. Configure contact email notifications
 
-The gallery is publicly readable, but only the one configured Firebase Auth user can upload or delete media. It accepts multiple files from a phone or computer, asks for a title and description for every file, uploads one file at a time with progress, and has no application-level item-count limit. Firebase quotas, storage, download bandwidth, and billing still apply; monitor usage and configure budget alerts in Google Cloud.
+EmailJS sends a notification after the message has been saved in Firestore. The destination must be fixed to `tadhikary239@gmail.com` in the EmailJS template; visitors must not be able to choose a recipient.
 
-1. In **Build → Authentication → Sign-in method**, enable **Email/Password**.
-2. In **Authentication → Users**, add an account for yourself. The website only offers sign-in; it does not offer public account creation.
-3. Copy that account's **UID** and set it as `galleryOwnerUid` in `firebase-config.js`.
-4. In **Build → Storage**, create a bucket if one does not already exist. Confirm `storageBucket` in `firebase-config.js` is the bucket's exact name.
-5. Put the same UID in both `firestore.rules` and `storage.rules`. Publish `firestore.rules` in the Firestore Rules tab and `storage.rules` in the Storage Rules tab.
-6. The rules allow public reads of gallery metadata and media. Only that UID can create gallery metadata or upload/delete files under its own `gallery/{uid}/` path. Storage rules enforce these maximum per-file sizes: photos 25 MB, videos 500 MB, and audio 100 MB. The page also checks the limits before upload.
-7. Open `gallery.html` over HTTPS, open **Owner sign in**, and sign in with the account you created. Select multiple photos, videos, or music files. Give each a title and description, then choose **Upload selected media**. Visitors can view images, play videos, and play audio without signing in.
-8. Uploads are public. Only upload media and music you own or have permission to publish. Firebase Storage and bandwidth are not unlimited; set Cloud Billing budget alerts and monitor actual usage. Alerts are notifications, not a guaranteed spending cap.
+1. Create an EmailJS account and connect an email service you control. Review the provider's current free-plan limits.
+2. Create an email template. Set its **To Email** to `tadhikary239@gmail.com`, **Subject** to `{{subject}}`, **Reply-To** to `{{reply_to}}`, and include `{{from_name}}`, `{{reply_to}}`, and `{{message}}` in the email body. Use the connected email account as the From address.
+3. You do not need to buy a custom domain. The public site uses GitHub Pages at `https://siddharth-ad.github.io/Devops/`. If EmailJS lets you edit its allowed-domain list, use the origin `https://siddharth-ad.github.io` (without the `/Devops/` path). For local development, use VS Code Live Server at `http://localhost:5500` rather than opening the page as `file://`.
+4. The EmailJS **Service ID**, **Template ID**, and **Public Key** are configured in `emailjs-config.js`. The public key is designed for client-side use; never place an EmailJS private token or SMTP password in this file.
+5. Submit the contact form. It reports success only after Firestore saves the message and EmailJS accepts the email request. If Firestore saves but email sending fails, the form says that the message is safely stored but the email notification failed. Check the EmailJS template, connected service, provider usage limits, and domain settings if editable on your plan.
 
-If owner upload is not configured yet, the gallery remains viewable but sign-in and upload will not work. A `permission-denied` error usually means the UID in the config does not exactly match the Firebase Auth user or both published rules.
+## 4. Add public gallery photos and videos without Firebase Storage
 
-## 4. Add content you want to edit
+The gallery uses static files served by GitHub Pages, so it does not require Firebase Storage or a Firebase billing upgrade. It has no in-page upload form: adding or removing gallery media requires updating the repository and publishing the site. Gallery media is public.
+
+1. Resize/compress the photo or video and place it in `media/gallery/`. Keep files small to reduce repository size and page loading time; large video files are not a good fit for a GitHub Pages repository. From a phone, open the GitHub repository, browse to `media/gallery/`, choose **Add file → Upload files**, select the media, and commit the upload.
+2. Edit `gallery-media.js` and add an entry to `galleryMedia` for each file. Use `type: "image"` or `type: "video"`, a relative `src` path such as `media/gallery/photo.jpg`, and a `title` and `description`.
+3. Save the changes and publish them to GitHub. The media appears on `gallery.html` after GitHub Pages updates.
+4. To remove an item, remove its entry from `gallery-media.js` and remove its media file from the repository.
+
+Only publish photos and videos you own or have permission to share. GitHub and GitHub Pages have repository, file-size, bandwidth, and usage limits; this is a free static gallery, not unlimited media hosting. Music and Firebase in-page uploads are not supported in this free setup.
+
+## 5. Add content you want to edit
 
 In **Firestore Database → Data**, create collection `siteContent`, with document ID `portfolio`. Add only the fields you want to override; any omitted field keeps the text already in `index.html`. Firestore listens for changes and updates the open page automatically.
 
@@ -46,24 +50,24 @@ The array fields `projectOneTags`, `projectTwoTags`, `projectThreeTags`, and `sk
 
 To change text, open `siteContent/portfolio` in the console, add or edit that field, and save. The page updates live; refresh if it is not open.
 
-## 5. Verify contact messages and email delivery
+## 6. Verify contact messages and email delivery
 
-Submit the website contact form. New submissions appear in **Firestore Database → Data → contactMessages**, and the extension sends the notification to `tadhikary239@gmail.com`. Only you, through the Firebase Console, can read messages. Check the document's extension delivery status and the extension's Cloud Function logs if delivery fails. Do not put private information in `siteContent/portfolio`; visitors can read that document.
+Submit the website contact form. New submissions appear in **Firestore Database → Data → contactMessages**, and EmailJS sends a notification to `tadhikary239@gmail.com` when configured. Only you, through the Firebase Console, can read messages. Check EmailJS email history/delivery status if delivery fails. Do not put private information in `siteContent/portfolio`; visitors can read that document.
 
 If a submission fails, open the page's developer tools (**F12 → Console**) and read the Firebase error:
 
 - `permission-denied`: publish the supplied Firestore rules and confirm they are attached to the `(default)` database.
 - `unavailable` or a network error: check connectivity, and open the site from `http://localhost` or its HTTPS GitHub Pages URL, not `file://`.
 - `failed-precondition`: confirm the Firestore database exists and is enabled.
-- A document appears but no email arrives: check the Trigger Email extension's collection path (`contactMessages`), SMTP credentials, sender verification, and Cloud Function logs. The page reports when an email job is queued; only the extension's delivery status confirms actual email delivery.
+- A document appears but no email arrives: check `emailjs-config.js`, the EmailJS template's fixed recipient and variable names, the connected service status, plan limits, and EmailJS email history.
 
-## 6. Publish the website changes
+## 7. Publish the website changes
 
-From the project folder, commit and push the integration:
+From the project folder, add the changed site files, media files, and `gallery-media.js`, then commit and push them. For example:
 
 ```powershell
-git add -- index.html script.js firebase.js firebase-config.js firestore.rules storage.rules gallery.js gallery.html style.css FIREBASE_SETUP.md
-git commit -m "Connect portfolio to Firebase"
+git add -- FIREBASE_SETUP.md emailjs-config.js email-notifications.js script.js
+git commit -m "Send contact notifications through EmailJS"
 git push
 ```
 
