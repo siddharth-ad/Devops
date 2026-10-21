@@ -4,6 +4,7 @@
   if (!audio || !mascot) return;
 
   let hasPlayed = false;
+  let playbackPending = false;
 
   function getGreetingAudio() {
     const hour = new Date().getHours();
@@ -13,33 +14,41 @@
   }
 
   function playWelcome() {
-    if (hasPlayed) return;
-    hasPlayed = true;
-    audio.src = getGreetingAudio();
+    if (hasPlayed || playbackPending) return;
+    playbackPending = true;
+    if (!audio.src) audio.src = getGreetingAudio();
+
     const playback = audio.play();
-    if (playback && typeof playback.catch === "function") playback.catch(() => {
-      hasPlayed = false;
-    });
+    if (playback && typeof playback.then === "function") {
+      playback.then(markAsPlayed).catch(() => {
+        playbackPending = false;
+      });
+    }
   }
 
   function onFirstInteraction() {
     playWelcome();
-    if (hasPlayed) {
-      window.removeEventListener("pointerdown", onFirstInteraction);
-      window.removeEventListener("keydown", onFirstInteraction);
-    }
   }
 
-  audio.addEventListener("play", () => mascot.classList.add("is-speaking"));
+  function markAsPlayed() {
+    hasPlayed = true;
+    playbackPending = false;
+    window.removeEventListener("pointerdown", onFirstInteraction);
+    window.removeEventListener("keydown", onFirstInteraction);
+  }
+
+  audio.addEventListener("play", () => {
+    markAsPlayed();
+    mascot.classList.add("is-speaking");
+  });
   audio.addEventListener("pause", () => mascot.classList.remove("is-speaking"));
   audio.addEventListener("ended", () => mascot.classList.remove("is-speaking"));
   audio.addEventListener("error", () => mascot.classList.remove("is-speaking"));
 
+  window.addEventListener("pointerdown", onFirstInteraction);
+  window.addEventListener("keydown", onFirstInteraction);
+
   window.addEventListener("load", () => {
     playWelcome();
-    if (!hasPlayed) {
-      window.addEventListener("pointerdown", onFirstInteraction);
-      window.addEventListener("keydown", onFirstInteraction);
-    }
   }, { once: true });
 })();
