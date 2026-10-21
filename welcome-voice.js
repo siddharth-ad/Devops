@@ -5,9 +5,17 @@
 
   let hasPlayed = false;
 
+  function getGreetingAudio() {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "media/welcome-morning.wav";
+    if (hour >= 12 && hour < 17) return "media/welcome-afternoon.wav";
+    return "media/welcome-evening.wav";
+  }
+
   function playWelcome() {
     if (hasPlayed) return;
     hasPlayed = true;
+    audio.src = getGreetingAudio();
     const playback = audio.play();
     if (playback && typeof playback.catch === "function") playback.catch(() => {
       hasPlayed = false;
