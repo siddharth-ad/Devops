@@ -37,6 +37,16 @@ function getContactErrorMessage(error) {
   }
 }
 
+function showContactStatus(message, type) {
+  statusText.className = `form-status ${type}`;
+  statusText.textContent = message;
+  statusText.focus({ preventScroll: true });
+  statusText.scrollIntoView({
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    block: "nearest",
+  });
+}
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   statusText.className = "form-status";
@@ -57,19 +67,17 @@ form.addEventListener("submit", async (event) => {
     try {
       const { sendContactNotification } = await import("./email-notifications.js");
       await sendContactNotification(contactMessage);
-      statusText.textContent = "Your message was saved in Firebase and the email notification was accepted for delivery.";
-      statusText.classList.add("ok");
+      showContactStatus("Message sent successfully. Thank you for reaching out!", "ok");
     } catch (emailError) {
       console.error("Firebase saved the contact message, but email delivery failed:", emailError);
-      statusText.textContent = emailError.message?.includes("not configured")
+      const message = emailError.message?.includes("not configured")
         ? "Your message was saved in Firebase, but email is not configured yet. Add your EmailJS service ID, template ID, and public key to emailjs-config.js."
         : "Your message was saved in Firebase, but the email notification could not be sent. Check EmailJS settings and try again later.";
-      statusText.classList.add("error");
+      showContactStatus(message, "error");
     }
   } catch (error) {
     console.error("Firebase contact form submission failed:", error);
-    statusText.textContent = getContactErrorMessage(error);
-    statusText.classList.add("error");
+    showContactStatus(getContactErrorMessage(error), "error");
   } finally {
     submitButton.disabled = false;
   }

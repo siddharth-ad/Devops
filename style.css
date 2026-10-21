@@ -680,7 +680,17 @@ ul { margin: 0; padding: 0; list-style: none; }
 .form textarea:focus { outline: 3px solid var(--accent); outline-offset: 1px; }
 
 .form .btn { margin-top: 16px; justify-self: start; }
-.form-status { min-height: 1.5em; font-weight: 500; }
+.form-status {
+  min-height: 1.5em;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.form-status:not(:empty) {
+  padding: 12px 14px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  background: var(--surface);
+}
 .form-status.ok { color: var(--ok); }
 .form-status.error { color: #C0392B; }
 
