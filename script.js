@@ -40,17 +40,14 @@ function getContactErrorMessage(error) {
 function showContactStatus(message, type) {
   statusText.className = `form-status ${type}`;
   statusText.textContent = message;
-  statusText.focus({ preventScroll: true });
-  statusText.scrollIntoView({
-    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-    block: "nearest",
-  });
+  statusText.hidden = false;
 }
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   statusText.className = "form-status";
   statusText.textContent = "Sending...";
+  statusText.hidden = false;
   submitButton.disabled = true;
 
   try {
