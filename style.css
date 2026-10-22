@@ -908,8 +908,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   to { transform: translateX(-50%); }
 }
 
-/* Pause the row you point at */
-.tools-row:hover .tools-track { animation-play-state: paused; }
+/* Pause only for mouse/trackpad users; touch devices can retain a sticky hover state. */
+@media (hover: hover) and (pointer: fine) {
+  .tools-row:hover .tools-track { animation-play-state: paused; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .tools-track { animation: none; }
@@ -2672,7 +2674,6 @@ body::before {
   .mascot-float,
   .mascot-shadow,
   .eye,
-  .tools-track,
   .buddy,
   .c-ears {
     animation: none !important;
@@ -2683,8 +2684,6 @@ body::before {
     transform: none;
   }
 
-  .tools-row { overflow-x: auto; }
-  .tools-track { transform: none !important; }
   .inf-glow { filter: none; }
   .inf-chip { will-change: auto; box-shadow: none; }
 }
