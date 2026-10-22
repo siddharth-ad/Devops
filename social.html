@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=social-search-1">
 </head>
 <body class="projects-page social-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -50,6 +50,22 @@
       <a href="social.html" aria-current="page">Profiles</a>
       <a href="gallery.html">Gallery</a>
     </nav>
+
+    <section class="social-search wrap" aria-labelledby="social-search-title">
+      <div class="social-search-copy">
+        <p class="projects-eyebrow">SEARCH THE WEB</p>
+        <h2 id="social-search-title">What are you looking for?</h2>
+      </div>
+      <form class="social-search-form" action="https://www.google.com/search" method="get" role="search">
+        <label class="social-search-label" for="social-search-query">Search Google</label>
+        <svg class="social-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 4.5 4.5"></path>
+        </svg>
+        <input id="social-search-query" name="q" type="search" placeholder="Search anything on Google..." required>
+        <button type="submit">Search</button>
+      </form>
+    </section>
 
     <section class="section social-profiles" aria-label="Social media profiles">
       <div class="wrap">
