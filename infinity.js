@@ -70,7 +70,7 @@
     '</g>';
   stage.appendChild(svg);
 
-  // 2) Create one logo chip per tool
+  // 2) Create one logo chip per tool.
   const chips = TOOLS.map(function (tool) {
     const name = tool[0], logo = tool[1], color = tool[2];
     const chip = document.createElement("div");
@@ -79,19 +79,10 @@
     chip.setAttribute("role", "img");
     chip.setAttribute("aria-label", name);
 
-    if (compactLayout) {
-      const badge = document.createElement("span");
-      badge.className = "tool-badge";
-      badge.style.setProperty("--c", "#" + color);
-      badge.textContent = name.charAt(0);
-      chip.appendChild(badge);
-      stage.appendChild(chip);
-      return chip;
-    }
-
     const img = document.createElement("img");
     img.alt = "";
-    img.loading = "lazy";
+    img.loading = "eager";
+    img.fetchPriority = "low";
     img.decoding = "async";
     img.src = "https://cdn.simpleicons.org/" + logo + "/" + color;
     img.addEventListener("error", function () {
@@ -112,9 +103,10 @@
 
   // 3) Move the chips along the loop
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const pauseAnimation = reduceMotion || compactLayout;
+  const pauseAnimation = reduceMotion;
   let offset = 0, last = 0, paused = false, inView = true, animationFrame = 0;
-  const SPEED = 0.18;                  // radians per second (raise for faster)
+  const SPEED = compactLayout ? 0.36 : 0.18;
+  const FRAME_INTERVAL = compactLayout ? 1000 / 24 : 1000 / 30;
 
   function place() {
     chips.forEach(function (chip, i) {
@@ -130,7 +122,7 @@
 
   function frame(now) {
     const elapsed = now - last;
-    if (elapsed < 1000 / 30) {
+    if (elapsed < FRAME_INTERVAL) {
       animationFrame = requestAnimationFrame(frame);
       return;
     }
@@ -154,6 +146,7 @@
   }
 
   place();
+  startAnimation();
 
   if ("IntersectionObserver" in window) {
     const visibilityObserver = new IntersectionObserver(function (entries) {
