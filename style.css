@@ -2409,7 +2409,7 @@ body::before {
 /* Light that flows along the loop */
 .inf-flow {
   stroke-dasharray: 18 26;
-  animation: inf-flow 2.4s linear infinite;
+  animation: inf-flow 5s linear infinite;
 }
 @keyframes inf-flow { to { stroke-dashoffset: -88; } }
 

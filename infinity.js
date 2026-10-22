@@ -105,7 +105,7 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const pauseAnimation = reduceMotion;
   let offset = 0, last = 0, paused = false, inView = true, animationFrame = 0;
-  const SPEED = compactLayout ? 0.36 : 0.18;
+  const SPEED = compactLayout ? 0.1 : 0.12;
   const FRAME_INTERVAL = compactLayout ? 1000 / 24 : 1000 / 30;
 
   function place() {
