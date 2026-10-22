@@ -1141,24 +1141,56 @@ ul { margin: 0; padding: 0; list-style: none; }
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  transform-origin: 50% 58%;
   transform: rotateX(var(--rx)) rotateY(var(--ry));
   transition: transform 0.15s ease-out;
 }
 
 /* Shared glossy purple-pink colour for head and ears */
 .head, .ear {
-  background: radial-gradient(circle at 30% 25%, #FFD9FF 0%, #E07BFF 38%, #8B45EE 75%, #5B24B8 100%);
+  background:
+    radial-gradient(ellipse at 30% 18%, rgba(255, 255, 255, 0.92) 0, rgba(255, 219, 255, 0.5) 12%, transparent 38%),
+    radial-gradient(ellipse at 34% 27%, #F7B9FF 0%, #D86BFA 35%, #9742E8 69%, #5423AE 100%);
 }
 
 .head {
   position: absolute;
   inset: 22px 0 0 0;
   z-index: 1;
+  overflow: hidden;
   border-radius: 46% 46% 50% 50%;
+  transform-style: preserve-3d;
   box-shadow:
-    inset -12px -16px 26px rgba(50, 0, 130, 0.55),   /* dark shading = 3D depth */
-    inset 10px 12px 20px rgba(255, 255, 255, 0.55),  /* light spot = shiny look */
-    0 12px 28px rgba(190, 90, 255, 0.28);
+    inset -15px -20px 28px rgba(38, 0, 94, 0.56),
+    inset 9px 9px 18px rgba(255, 255, 255, 0.35),
+    inset 0 -3px 5px rgba(255, 255, 255, 0.18),
+    0 15px 28px rgba(109, 38, 202, 0.32),
+    0 4px 10px rgba(8, 5, 20, 0.28);
+}
+.head::before {
+  position: absolute;
+  z-index: 1;
+  top: 7%;
+  left: 18%;
+  width: 52%;
+  height: 19%;
+  border-radius: 50%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.08) 72%, transparent);
+  content: "";
+  filter: blur(5px);
+  transform: rotate(-12deg) translateZ(2px);
+  pointer-events: none;
+}
+.head::after {
+  position: absolute;
+  right: 9%;
+  bottom: 6%;
+  left: 9%;
+  height: 22%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, transparent, rgba(38, 0, 94, 0.16));
+  content: "";
+  pointer-events: none;
 }
 
 .ear {
@@ -1166,8 +1198,28 @@ ul { margin: 0; padding: 0; list-style: none; }
   top: 0;
   width: 50px;
   height: 56px;
+  filter: drop-shadow(0 5px 5px rgba(35, 5, 80, 0.38));
   transform-origin: 50% 100%;
   clip-path: polygon(50% 0, 100% 100%, 0 100%);      /* triangle */
+}
+.ear::before {
+  position: absolute;
+  inset: 9px 10px 5px;
+  background: linear-gradient(155deg, #FFD5FF 0%, #E88BFF 45%, #B34CEB 100%);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  content: "";
+}
+.ear::after {
+  position: absolute;
+  top: 9px;
+  left: 47%;
+  width: 2px;
+  height: 25px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), transparent);
+  content: "";
+  filter: blur(1px);
+  transform: rotate(-14deg);
 }
 .ear.left  { left: 8px;  transform: rotate(-10deg); animation: ear-wiggle-left 3.2s ease-in-out infinite; }
 .ear.right { right: 8px; transform: rotate(10deg); animation: ear-wiggle-right 3.2s ease-in-out infinite; }
@@ -1187,51 +1239,62 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* Lighter face plate */
 .face {
   position: absolute;
+  z-index: 2;
   left: 12%; right: 12%;
   top: 28%;
   height: 52%;
   border-radius: 42%;
-  background: linear-gradient(#FBE0FF, #E9AAFF);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background:
+    radial-gradient(ellipse at 50% 14%, rgba(255, 255, 255, 0.42), transparent 47%),
+    linear-gradient(155deg, #FFE9FF 0%, #F4CEFF 52%, #D99BF5 100%);
   box-shadow:
-    inset 0 5px 10px rgba(255, 255, 255, 0.8),
-    inset 0 -8px 14px rgba(120, 40, 190, 0.35);
+    inset 0 5px 10px rgba(255, 255, 255, 0.82),
+    inset 0 -9px 15px rgba(112, 35, 168, 0.28),
+    0 2px 8px rgba(69, 13, 121, 0.16);
+  transform: translateZ(15px);
 }
 .face::after {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 10%;
-  width: 34px;
-  height: 15px;
-  border-bottom: 3px solid #7A348C;
+  bottom: 11%;
+  width: 30px;
+  height: 13px;
+  border-bottom: 2.5px solid #713481;
   border-radius: 0 0 50% 50%;
-  transform: translateX(-50%) scaleX(.82);
+  transform: translateX(-50%) translateZ(3px) scaleX(.82);
   animation: mascot-smile 3.8s ease-in-out infinite;
 }
 .mascot.is-speaking .face::after {
-  height: 17px;
+  height: 15px;
   border: 2px solid #7A348C;
   border-radius: 45%;
-  background: #7A348C;
-  transform: translateX(-50%) scaleX(.9);
+  background: linear-gradient(#4D1C68, #8A3A9A);
+  box-shadow: inset 0 2px 3px rgba(20, 4, 30, 0.4), 0 1px 2px rgba(255, 255, 255, 0.32);
+  transform: translateX(-50%) translateZ(3px) scaleX(.9);
   animation: mascot-talk 170ms ease-in-out infinite alternate;
 }
 @keyframes mascot-smile {
-  0%, 72%, 100% { transform: translateX(-50%) scaleX(.82); }
-  82%, 92% { transform: translateX(-50%) scaleX(1.12) scaleY(1.12); }
+  0%, 72%, 100% { transform: translateX(-50%) translateZ(3px) scaleX(.82); }
+  82%, 92% { transform: translateX(-50%) translateZ(3px) scaleX(1.12) scaleY(1.12); }
 }
 @keyframes mascot-talk {
-  from { transform: translateX(-50%) scale(.72, .28); }
-  to { transform: translateX(-50%) scale(1, 1); }
+  from { transform: translateX(-50%) translateZ(3px) scale(.72, .28); }
+  to { transform: translateX(-50%) translateZ(3px) scale(1, 1); }
 }
 
 .eye {
   position: absolute;
+  z-index: 1;
   top: 24%;
   width: 20px;
   height: 26px;
   border-radius: 50%;
-  background: #0B0716;
+  background: radial-gradient(ellipse at 36% 27%, #493554 0%, #140D20 48%, #080610 100%);
+  box-shadow:
+    inset 1px 2px 3px rgba(255, 255, 255, 0.12),
+    0 2px 3px rgba(61, 14, 93, 0.22);
   animation: blink 5s infinite;
 }
 .eye.left  { left: 20%; }
@@ -1244,7 +1307,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0 48%, #D9F7FF 100%);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.55);
   transform: translate(var(--px), var(--py));
 }
 
@@ -1256,7 +1320,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   height: 6px;
   margin-left: -3px;
   border-radius: 50%;
-  background: #0B0716;
+  background: radial-gradient(circle at 35% 25%, #422547, #120B1C 72%);
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.2), 0 2px 2px rgba(69, 13, 121, 0.24);
 }
 
 .mascot-shadow {
