@@ -42,31 +42,111 @@
       <div class="wrap">
         <p class="projects-eyebrow">ABOUT · APPROACH · TOOLKIT</p>
         <h1 data-site-content="aboutTitle">About me</h1>
-        <p>Learn more about my background, how I approach projects, and the tools I work with.</p>
+        <p>A project-focused digital CV highlighting my IT experience, DevOps work, and technical toolkit.</p>
       </div>
     </section>
 
-    <section class="section about-page-content">
-      <div class="wrap about-grid">
-        <div class="portrait" role="img" aria-label="Portrait placeholder" data-site-content="portraitText">YN</div>
-        <div class="about-page-copy">
-          <p class="about-text" data-site-content="aboutParagraphOne">
-            I'm a web developer and designer with 5 years of experience helping small businesses
-            get online. I care about sites that are easy to understand, quick to load and simple
-            to maintain.
-          </p>
-          <p class="about-text" data-site-content="aboutParagraphTwo">
-            Before web design I worked in customer support, so I write and build with the
-            visitor's questions in mind. When I'm not working I'm usually hiking or trying to
-            fix my own bicycle.
-          </p>
+    <section class="section about-page-content" id="cv-profile">
+      <div class="wrap cv-card">
+        <div class="cv-layout">
+          <div class="cv-main">
+            <header class="cv-header">
+              <p class="projects-eyebrow">CURRICULUM VITAE</p>
+              <h2>Siddharth Adhikary</h2>
+              <p class="cv-role">DevOps Engineer</p>
+              <p class="cv-experience">3+ years of IT experience</p>
+            </header>
 
-          <h2 class="skills-title" data-site-content="skillsTitle">Tools I use every day</h2>
-          <ul class="tags tags-lg" data-site-tags="skillsTags">
-            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Git and GitHub</li>
-            <li>Figma</li><li>WordPress</li><li>SEO</li>
-          </ul>
-          <a class="btn btn-primary about-contact-link" href="index.html#contact">Let's work together</a>
+            <div class="cv-content">
+              <section class="cv-section" aria-labelledby="cv-summary-title">
+                <h3 id="cv-summary-title">Professional Summary</h3>
+                <p>
+                  IT professional with 3+ years of experience and a portfolio of hands-on
+                  DevOps projects focused on continuous integration and delivery, automation,
+                  and repeatable release workflows. I build and document practical examples
+                  that show how code moves through build, test, and deployment stages.
+                </p>
+              </section>
+
+              <section class="cv-section" aria-labelledby="cv-experience-title">
+                <h3 id="cv-experience-title">Professional Experience</h3>
+                <article class="cv-project">
+                  <div class="cv-project-heading">
+                    <h4>IT Experience</h4>
+                    <span>3+ years</span>
+                  </div>
+                  <p>
+                    IT professional with more than three years of experience.
+                  </p>
+                </article>
+              </section>
+
+              <section class="cv-section" aria-labelledby="cv-projects-title">
+                <h3 id="cv-projects-title">Selected Projects</h3>
+                <article class="cv-project">
+                  <div class="cv-project-heading">
+                    <h4>CI/CD Pipeline</h4>
+                    <span>Git · GitHub Actions · Terraform</span>
+                  </div>
+                  <p>
+                    Created a GitHub-based delivery workflow to validate code changes
+                    and publish website updates through a repeatable deployment process.
+                  </p>
+                </article>
+                <article class="cv-project">
+                  <div class="cv-project-heading">
+                    <h4>DevOps Delivery Pipeline</h4>
+                    <span>Jenkins · Docker · Kubernetes</span>
+                  </div>
+                  <p>
+                    Developed a project that explains the delivery lifecycle from source
+                    control through build, testing, packaging, and deployment.
+                  </p>
+                </article>
+                <article class="cv-project">
+                  <div class="cv-project-heading">
+                    <h4>DevOps Project Portfolio</h4>
+                    <span>Automation · JavaScript · Web</span>
+                  </div>
+                  <p>
+                    Built a portfolio to present practical DevOps experiments and make
+                    technical workflows easier to explore.
+                  </p>
+                </article>
+              </section>
+
+              <section class="cv-section" aria-labelledby="cv-toolkit-title">
+                <h3 id="cv-toolkit-title">Technical Skills</h3>
+                <dl class="cv-skills">
+                  <div>
+                    <dt>CI/CD &amp; version control</dt>
+                    <dd>Git, GitHub, GitHub Actions, Jenkins</dd>
+                  </div>
+                  <div>
+                    <dt>Containers &amp; infrastructure</dt>
+                    <dd>Docker, Kubernetes, Terraform</dd>
+                  </div>
+                  <div>
+                    <dt>Web &amp; scripting</dt>
+                    <dd>HTML, CSS, JavaScript</dd>
+                  </div>
+                </dl>
+              </section>
+
+              <footer class="cv-footer">
+                <a href="https://siddharth-ad.github.io/Devops/">Portfolio</a>
+              </footer>
+            </div>
+          </div>
+          <aside class="cv-aside" aria-label="CV photo and actions">
+            <div class="cv-photo-placeholder" role="img" aria-label="Photo placeholder. Add a portrait here.">
+              <span>PHOTO</span>
+              <small>Add your headshot here</small>
+            </div>
+            <button class="btn btn-primary cv-print-button" id="printCv" type="button">
+              Print / Save as PDF
+            </button>
+          </aside>
         </div>
       </div>
     </section>
@@ -80,6 +160,7 @@
   </footer>
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("printCv").addEventListener("click", () => window.print());
   </script>
   <script src="mobile-nav.js"></script>
   <script type="module" src="site-content.js"></script>
