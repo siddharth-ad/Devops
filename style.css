@@ -2738,7 +2738,7 @@ body::before {
   font-weight: 700;
 }
 
-.cv-aside { padding-top: 48px; }
+.cv-aside { min-width: 0; }
 
 .cv-photo-placeholder {
   display: flex;
@@ -2770,7 +2770,7 @@ body::before {
   padding-inline: 14px;
 }
 
-.cv-content { padding-top: 8px; }
+.cv-content { padding-top: 4px; }
 
 .cv-section {
   padding-top: 28px;
@@ -2820,19 +2820,33 @@ body::before {
 
 .cv-project > p { margin-top: 6px; }
 
-.cv-skills {
-  display: grid;
-  gap: 10px;
-  margin: 18px 0 0;
+.cv-side-section {
+  margin-top: 26px;
+  break-inside: avoid;
 }
 
-.cv-skills div {
-  padding: 10px 0;
-  border-top: 1px solid rgba(148, 167, 195, 0.15);
+.cv-side-section h3 {
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 4px solid #79E4D5;
+  color: #F1F5FC;
+  font-size: 1.08rem;
 }
 
-.cv-skills dt { color: #E7EDF7; font-weight: 700; }
-.cv-skills dd { margin: 6px 0 0; color: #A9B5C9; }
+.cv-skill-list { display: grid; gap: 8px; }
+
+.cv-skill-list li {
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(148, 167, 195, 0.22);
+  color: #C5D0E0;
+  font-size: 0.9rem;
+}
+
+.cv-blank-field {
+  min-height: 22px;
+  margin-top: 8px;
+  border-bottom: 1px solid rgba(148, 167, 195, 0.32);
+}
 
 .cv-footer {
   display: flex;
@@ -2854,6 +2868,8 @@ body::before {
     flex-direction: column;
     padding-top: 0;
   }
+  .cv-aside .cv-side-section { width: 100%; }
+  .cv-aside .cv-side-section:first-of-type { margin-top: 4px; }
   .cv-photo-placeholder { width: 104px; padding: 8px; }
   .cv-photo-placeholder small { font-size: 0.7rem; }
   .cv-print-button { width: auto; padding: 8px 10px; font-size: 0.8rem; }
@@ -2896,13 +2912,15 @@ body::before {
     gap: 10mm;
   }
 
-  .about-page .cv-aside { padding-top: 12mm; }
   .about-page .cv-photo-placeholder {
     border-color: #8B95A5;
     background: #FFFFFF;
     color: #172033;
   }
   .about-page .cv-photo-placeholder small { color: #596579; }
+  .about-page .cv-side-section h3 { color: #172033; border-left-color: #687386; }
+  .about-page .cv-skill-list li { color: #39465A; border-color: #D3DBE7; }
+  .about-page .cv-blank-field { border-color: #AEB8C7; }
 
   .about-page .cv-header {
     padding-bottom: 14px;
@@ -2911,19 +2929,16 @@ body::before {
 
   .about-page .cv-header h2,
   .about-page .cv-section h3,
-  .about-page .cv-project h4,
-  .about-page .cv-skills dt { color: #172033; }
+  .about-page .cv-project h4 { color: #172033; }
 
   .about-page .cv-role,
   .about-page .cv-experience,
   .about-page .cv-section > p,
-  .about-page .cv-project > p,
-  .about-page .cv-skills dd { color: #39465A; }
+  .about-page .cv-project > p { color: #39465A; }
 
   .about-page .cv-experience { border-color: #AEB8C7; }
   .about-page .cv-project-heading span { color: #17665E; }
   .about-page .cv-project,
   .about-page .cv-footer { border-color: #D3DBE7; }
-  .about-page .cv-skills div { border-color: #D3DBE7; }
   .about-page a { color: #2041A8; }
 }
