@@ -1,6 +1,6 @@
 # Firebase setup
 
-This static site uses Cloud Firestore for contact messages and live-editable page text. No Firebase service-account key belongs in this website.
+This static site uses Cloud Firestore for contact messages, live-editable page text, and the public Pinterest gallery. Cloud Functions sync Pinterest photos server-side. No Firebase service-account key or Pinterest app secret belongs in the website.
 
 ## 1. Create a Firebase project and web app
 
@@ -13,7 +13,7 @@ This static site uses Cloud Firestore for contact messages and live-editable pag
 
 1. Open **Build → Firestore Database** and create a database.
 2. Open the Firestore **Rules** tab, replace its rules with the contents of `firestore.rules`, then click **Publish**.
-3. The rules allow public visitors to read only `siteContent/portfolio` and submit validated contact messages. They do not allow the website to read messages or write page content.
+3. The rules allow public visitors to read `siteContent/portfolio` and validated public image records in the `publicGallery` collection, and to submit validated contact messages. They do not allow website visitors to read contact messages or private Pinterest tokens, or to write gallery/page content.
 4. Contact messages are saved in Firestore first. The website then sends a separate email notification through EmailJS; this avoids a Firebase billing-plan upgrade for email sending.
 5. The contact form is public and can receive spam. Enable any available provider-side anti-abuse controls. Never put SMTP passwords or EmailJS private access tokens in this repository.
 
@@ -27,18 +27,36 @@ EmailJS sends a notification after the message has been saved in Firestore. The 
 4. The EmailJS **Service ID**, **Template ID**, and **Public Key** are configured in `emailjs-config.js`. The public key is designed for client-side use; never place an EmailJS private token or SMTP password in this file.
 5. Submit the contact form. It reports success only after Firestore saves the message and EmailJS accepts the email request. If Firestore saves but email sending fails, the form says that the message is safely stored but the email notification failed. Check the EmailJS template, connected service, provider usage limits, and domain settings if editable on your plan.
 
-## 4. Add public gallery photos and videos without Firebase Storage
+## 4. Automatically sync the Pinterest lifestyle board
 
-The gallery uses static files served by GitHub Pages, so it does not require Firebase Storage or a Firebase billing upgrade. It has no in-page upload form: adding or removing gallery media requires updating the repository and publishing the site. Gallery media is public.
+After the Pinterest API and Firebase Cloud Functions are configured, the Gallery page reads all public image pins from the `My life style` board into a dark, on-site photo gallery. A scheduled Cloud Function refreshes the board every six hours. Titles and descriptions are shown when available. Gallery cards are not links, so clicking a displayed photo does not navigate to Pinterest. The browser loads the photo files from Pinterest's image CDN.
 
-1. Resize/compress the photo or video and place it in `media/gallery/`. Keep files small to reduce repository size and page loading time; large video files are not a good fit for a GitHub Pages repository. From a phone, open the GitHub repository, browse to `media/gallery/`, choose **Add file → Upload files**, select the media, and commit the upload.
-2. Edit `gallery-media.js` and add an entry to `galleryMedia` for each file. Use `type: "image"` or `type: "video"`, a relative `src` path such as `media/gallery/photo.jpg`, and a `title` and `description`.
-3. Save the changes and publish them to GitHub. The media appears on `gallery.html` after GitHub Pages updates.
-4. To remove an item, remove its entry from `gallery-media.js` and remove its media file from the repository.
+The current Firebase project is `devops-10bda`. Cloud Functions and scheduled jobs require the Firebase Blaze billing plan and may incur charges. Review Firebase's current pricing and your account's budget alerts before enabling billing. Pinterest API app access and the `boards:read` and `pins:read` scopes must also be available to your Pinterest developer app. The sync only publishes board data after confirming the board is public.
 
-Only publish photos and videos you own or have permission to share. GitHub and GitHub Pages have repository, file-size, bandwidth, and usage limits; this is a free static gallery, not unlimited media hosting. Music and Firebase in-page uploads are not supported in this free setup.
+1. In the [Pinterest Developers portal](https://developers.pinterest.com/), register an app and request the `boards:read` and `pins:read` scopes.
+2. Add this exact OAuth redirect URI to the Pinterest app: `https://us-central1-devops-10bda.cloudfunctions.net/pinterestOAuth`
+3. Install and sign in to the Firebase CLI, select project `devops-10bda`, then from the repository root run:
 
-## 5. Add content you want to edit
+   ```powershell
+   npm install -g firebase-tools
+   firebase login
+   firebase use devops-10bda
+   firebase functions:secrets:set PINTEREST_CLIENT_SECRET
+   firebase deploy --only functions,firestore:rules
+   ```
+
+   The CLI prompts for `PINTEREST_CLIENT_ID` the first time the function is deployed. Enter the app ID from Pinterest. Paste the app secret only into the CLI's secret prompt; never put it in a source file, GitHub, or chat. To replace a secret later, run `firebase functions:secrets:set PINTEREST_CLIENT_SECRET` again and redeploy.
+4. If your Pinterest app was created before September 25, 2025, set `PINTEREST_CONTINUOUS_REFRESH=true` in the ignored local file `.env.devops-10bda` before deploying. Newer apps receive continuous refresh tokens automatically.
+5. Connect your account once by opening `https://us-central1-devops-10bda.cloudfunctions.net/pinterestOAuth?action=connect` while signed in to the Pinterest account that owns the board. Approve the requested read-only permissions. The callback performs the first sync; later syncs run every six hours.
+6. Publish the website changes to GitHub Pages. Ensure `firebase-config.js` points to the same Firebase project. Public visitors can read only sanitized public image records and sync status; OAuth tokens are stored in the private `privateIntegrations/pinterest` document and denied by Firestore rules.
+
+Until the API is connected, the Gallery page shows its saved local fallback photo. Pinterest may restrict API access or board visibility; check the Cloud Functions logs if the initial sync or a later refresh fails. Pins without a description use their alt text when available. Only share photos you own or have permission to publish.
+
+## 5. Add manual public gallery photos and videos
+
+Manual media remains available as a fallback or for items not on Pinterest. Resize/compress a file and place it in `media/gallery/`, then add an entry to `gallery-media.js` using `type: "image"` or `type: "video"`, a relative `src`, a `title`, and a `description`. Publish the site changes to GitHub. GitHub and GitHub Pages have repository, file-size, bandwidth, and usage limits; large videos are not a good fit for this free static site. Music and Firebase in-page uploads are not supported.
+
+## 6. Add content you want to edit
 
 In **Firestore Database → Data**, create collection `siteContent`, with document ID `portfolio`. Add only the fields you want to override; any omitted field keeps the text already in `index.html`. Firestore listens for changes and updates the open page automatically.
 
@@ -50,7 +68,7 @@ The array fields `projectOneTags`, `projectTwoTags`, `projectThreeTags`, and `sk
 
 To change text, open `siteContent/portfolio` in the console, add or edit that field, and save. The page updates live; refresh if it is not open.
 
-## 6. Verify contact messages and email delivery
+## 7. Verify contact messages and email delivery
 
 Submit the website contact form. New submissions appear in **Firestore Database → Data → contactMessages**, and EmailJS sends a notification to `tadhikary239@gmail.com` when configured. Only you, through the Firebase Console, can read messages. Check EmailJS email history/delivery status if delivery fails. Do not put private information in `siteContent/portfolio`; visitors can read that document.
 
@@ -61,7 +79,7 @@ If a submission fails, open the page's developer tools (**F12 → Console**) and
 - `failed-precondition`: confirm the Firestore database exists and is enabled.
 - A document appears but no email arrives: check `emailjs-config.js`, the EmailJS template's fixed recipient and variable names, the connected service status, plan limits, and EmailJS email history.
 
-## 7. Publish the website changes
+## 8. Publish the website changes
 
 From the project folder, add the changed site files, media files, and `gallery-media.js`, then commit and push them. For example:
 

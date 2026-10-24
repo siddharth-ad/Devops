@@ -5,6 +5,8 @@ import {
   doc,
   getFirestore,
   onSnapshot,
+  orderBy,
+  query,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
@@ -33,6 +35,60 @@ export function watchSiteContent(onContent, onError) {
     (snapshot) => onContent(snapshot.exists() ? snapshot.data() : null),
     onError,
   );
+}
+
+export function watchPinterestGallery(onGallery, onError) {
+  const database = requireDatabase();
+  let items = null;
+  let status = null;
+  let itemsReady = false;
+  let statusReady = false;
+  let stopped = false;
+  let stopItems = () => {};
+  let stopStatus = () => {};
+
+  const stop = () => {
+    stopped = true;
+    stopItems();
+    stopStatus();
+  };
+  const handleError = (error) => {
+    if (stopped) return;
+    stop();
+    onError(error);
+  };
+
+  const publishGallery = () => {
+    if (!stopped && itemsReady && statusReady) {
+      onGallery(status
+        ? {
+            items,
+            syncedAt: status.syncedAt || null,
+            available: status.available !== false,
+          }
+        : null);
+    }
+  };
+  stopItems = onSnapshot(
+    query(collection(database, "publicGallery"), orderBy("position", "asc")),
+    (snapshot) => {
+      items = snapshot.docs.map((item) => item.data());
+      itemsReady = true;
+      publishGallery();
+    },
+    handleError,
+  );
+  stopStatus = onSnapshot(
+    doc(database, "publicGalleryStatus", "lifestyle"),
+    (snapshot) => {
+      status = snapshot.exists() ? snapshot.data() : null;
+      statusReady = true;
+      publishGallery();
+    },
+    handleError,
+  );
+
+  return stop;
 }
 
 export async function saveContactMessage({ name, email, message }) {
