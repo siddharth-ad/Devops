@@ -6,4 +6,10 @@ export const galleryMedia = [
     title: "Tango",
     description: "From my Pinterest board, My life style.",
   },
+  {
+    type: "image",
+    src: "media/gallery/pinterest-perfection.jpg",
+    title: "Perfection",
+    description: "moment",
+  },
 ];
