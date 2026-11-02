@@ -36,7 +36,7 @@ The website-hosted gallery uses static files served by GitHub Pages. It has no i
 3. Save the changes and publish them to GitHub. The media appears on `gallery.html` after GitHub Pages updates.
 4. To remove an item, remove its entry from `gallery-media.js` and remove its media file from the repository.
 
-The Pinterest profile embed is separate from the website-hosted gallery cards. It depends on Pinterest's widget service and only displays content Pinterest makes public; private or secret-board pins will not appear. If the Pinterest account changes, update the profile URL in `gallery.html`. Only publish photos and videos you own or have permission to share. GitHub and GitHub Pages have repository, file-size, bandwidth, and usage limits; large video files are not a good fit for this free gallery. Music and Firebase in-page uploads are not supported.
+The Pinterest board embed is separate from the website-hosted gallery cards. It depends on Pinterest's widget service and only displays content Pinterest makes public; private or secret-board pins will not appear. If the board changes, update its URL in `gallery.html`. Only publish photos and videos you own or have permission to share. GitHub and GitHub Pages have repository, file-size, bandwidth, and usage limits; large video files are not a good fit for this free gallery. Music and Firebase in-page uploads are not supported.
 
 ## 6. Add content you want to edit
 
