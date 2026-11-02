@@ -63,7 +63,22 @@
 
         <p class="gallery-status" id="galleryStatus" role="status" aria-live="polite">Loading the public gallery…</p>
         <div class="gallery-grid" id="galleryGrid" aria-label="Photo and video gallery"></div>
-        <p class="gallery-note">Public photos from My life style are shown here in the site's dark gallery. New board photos must also be added to the website gallery when the site is updated.</p>
+        <p class="gallery-note">These are the photos and videos hosted in the website gallery. For automatic updates, see the live Pinterest profile below.</p>
+
+        <div class="gallery-heading pinterest-gallery-heading">
+          <div>
+            <p class="projects-eyebrow">AUTOMATIC PINTEREST UPDATES</p>
+            <h2>Pinterest profile</h2>
+          </div>
+          <a class="pinterest-profile-link" href="https://www.pinterest.com/tadhikary239/" target="_blank" rel="noopener noreferrer">Open Pinterest profile</a>
+        </div>
+        <p class="gallery-status">Public Pinterest pins and boards are embedded here. New public pins appear when Pinterest updates this profile embed.</p>
+        <div class="pinterest-gallery-embed">
+          <a data-pin-do="embedUser" data-pin-board-width="900" data-pin-scale-height="400" data-pin-scale-width="115" href="https://www.pinterest.com/tadhikary239/">Visit my Pinterest profile</a>
+        </div>
+        <noscript>
+          <p class="gallery-note">Enable JavaScript to view the Pinterest embed, or <a href="https://www.pinterest.com/tadhikary239/">open the Pinterest profile</a>.</p>
+        </noscript>
       </div>
     </section>
   </main>
@@ -77,6 +92,7 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <script async defer src="https://assets.pinterest.com/js/pinit.js"></script>
   <script src="mobile-nav.js"></script>
   <script type="module" src="gallery.js"></script>
 </body>
