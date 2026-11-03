@@ -29,14 +29,14 @@ EmailJS sends a notification after the message has been saved in Firestore. The 
 
 ## 4. Add public gallery photos and videos
 
-The website-hosted gallery uses static files served by GitHub Pages. It has no in-page upload form: adding or removing those local gallery cards requires updating the repository and publishing the site. The Gallery page also embeds the linked public Pinterest profile using Pinterest's official widget, so public Pinterest updates can appear there without manually copying each pin into the repository.
+The website-hosted gallery uses static files served by GitHub Pages. It has no in-page upload form: adding or removing gallery cards requires updating the repository and publishing the site. Pinterest API access is not configured, so new Pinterest pins do not automatically sync into this dark gallery.
 
 1. Resize/compress the photo and place it in `media/gallery/`. From a phone, open the GitHub repository, browse to `media/gallery/`, choose **Add file → Upload files**, select the media, and commit the upload.
 2. Edit `gallery-media.js` and add an entry to `galleryMedia` for each file. Use `type: "image"` or `type: "video"`, a relative `src` path such as `media/gallery/photo.jpg`, and a `title` and `description`.
 3. Save the changes and publish them to GitHub. The media appears on `gallery.html` after GitHub Pages updates.
 4. To remove an item, remove its entry from `gallery-media.js` and remove its media file from the repository.
 
-The Pinterest board embed is separate from the website-hosted gallery cards. It depends on Pinterest's widget service and only displays content Pinterest makes public; private or secret-board pins will not appear. If the board changes, update its URL in `gallery.html`. Only publish photos and videos you own or have permission to share. GitHub and GitHub Pages have repository, file-size, bandwidth, and usage limits; large video files are not a good fit for this free gallery. Music and Firebase in-page uploads are not supported.
+Only publish photos and videos you own or have permission to share. GitHub and GitHub Pages have repository, file-size, bandwidth, and usage limits; large video files are not a good fit for this free gallery. Music and Firebase in-page uploads are not supported.
 
 ## 6. Add content you want to edit
 

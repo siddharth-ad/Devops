@@ -55,10 +55,10 @@ const validMedia = getValidMedia(galleryMedia);
 count.textContent = `${validMedia.length} ${validMedia.length === 1 ? "ITEM" : "ITEMS"}`;
 if (validMedia.length) {
   gallery.replaceChildren(...validMedia.map(createCard));
-  status.textContent = `${validMedia.length} public photo or video${validMedia.length === 1 ? "" : "s"} loaded.`;
+  status.textContent = `${validMedia.length} website photo or video${validMedia.length === 1 ? "" : "s"} loaded.`;
 } else {
-  const empty = makeTextElement("p", "gallery-empty", "No photos or videos have been added yet.");
+  const empty = makeTextElement("p", "gallery-empty", "No photos or videos have been added to the website gallery yet.");
   empty.setAttribute("role", "status");
   gallery.replaceChildren(empty);
-  status.textContent = "No media has been added yet. New photos and videos will appear here after the site is updated.";
+  status.textContent = "No media has been added yet. Add photos or videos to the website gallery to display them here.";
 }

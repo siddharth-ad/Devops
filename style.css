@@ -2329,21 +2329,6 @@ body::before {
   font-size: clamp(1.8rem, 4vw, 2.7rem);
   letter-spacing: -0.04em;
 }
-.pinterest-gallery-heading { margin: 56px 0 18px; }
-.pinterest-profile-link {
-  color: #BDEFE8;
-  font-weight: 700;
-  text-underline-offset: 4px;
-}
-.pinterest-gallery-embed {
-  min-height: 120px;
-  overflow-x: auto;
-  padding: 18px;
-  border: 1px solid rgba(148, 167, 195, 0.17);
-  border-radius: 14px;
-  background: rgba(13, 19, 30, 0.72);
-}
-.pinterest-gallery-embed iframe { max-width: 100%; }
 .gallery-count {
   padding: 7px 11px;
   border: 1px solid rgba(112, 225, 209, 0.2);
